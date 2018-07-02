@@ -8,6 +8,9 @@ angular.module('myApp', [])
         instruments: INSTRUMENT_CONFIGURATIONS
     }
 
+    // default to populate the fields with
+    $scope.current = $scope.instruments["KCWI"];
+
     // $scope.info = {};
     // $scope.showAdd = true;
     // $scope.showOption = false;
@@ -63,7 +66,6 @@ angular.module('myApp', [])
             console.log(error);
         });
     }
-
 
     // triggers an action when the Enter key is pressed
     $scope.keyEnter = function(keyEvent) {
@@ -335,7 +337,7 @@ angular.module('myApp', [])
     //}
 
     // show the initial list
-    $scope.showlist();
+    $scope.showList();
 
 })
 .directive('onReadFile', function ($parse) {

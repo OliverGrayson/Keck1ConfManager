@@ -9,7 +9,8 @@ from bson.objectid import ObjectId
 from flask import Flask,render_template,jsonify,json,request
 #from fabric.api import *
 
-import instrumentConf
+# config library in instrumentConf.py
+from instrumentConf import *
 
 reldir = os.getenv('RELDIR')
 datadir = os.path.join(reldir, 'data', 'InstrumentConfManager')
@@ -24,13 +25,15 @@ application = Flask(__name__, template_folder=template_dir,
                     static_folder=static_dir)
 
 # initialize database connections
+# uses instrumentConf.py functions and data
 client = MongoClient('observinglogs')
+instruments = instruments()
 db = {
-    # KCWIdb: kcwiConf(client.KCWI),
-    'HIRES': instrumentConf.instrumentDB(instrumentConf.HIRES_CONF, client.HIRES),
-    'LRIS': instrumentConf.instrumentDB(instrumentConf.LRIS_CONF, client.LRIS),
-    'MOSFIRE': instrumentConf.instrumentDB(instrumentConf.MOSFIRE_CONF, client.MOSFIRE)
-    }
+     'KCWI': instrumentDB(instruments.KCWI_CONF, client.KCWI),
+     'HIRES': instrumentDB(instruments.HIRES_CONF, client.HIRES),
+     'LRIS': instrumentDB(instruments.LRIS_CONF, client.LRIS),
+     'MOSFIRE': instrumentDB(instruments.MOSFIRE_CONF, client.MOSFIRE)
+     }
 
 
 # TODO i'm not sure the try/except should be commented out here, talk to Luca
