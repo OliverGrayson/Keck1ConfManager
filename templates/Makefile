@@ -1,10 +1,10 @@
 # Python module providing a high-level interface to the KCWI instrument.
 
-override SYSNAM = kss/kcwi/scripts/python/KCWIConfManager/templates
+override SYSNAM = kss/kcwi/scripts/python/Keck1ConfManager/templates
 override VERNUM = 1.0
 
 RELDAT = $(wildcard *.html)
-DATSUB = KCWIConfManager/templates
+DATSUB = Keck1ConfManager/templates
 
 ################################################################################
 # KROOT boilerplate:

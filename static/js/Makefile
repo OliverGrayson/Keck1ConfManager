@@ -1,10 +1,10 @@
 # Python module providing a high-level interface to the KCWI instrument.
 
-override SYSNAM = kss/kcwi/scripts/python/KCWIConfManager/static/js
+override SYSNAM = kss/kcwi/scripts/python/Keck1ConfManager/static/js
 override VERNUM = 1.0
 
 RELDAT = $(wildcard *.js)
-DATSUB = KCWIConfManager/static/js
+DATSUB = Keck1ConfManager/static/js
 
 
 ################################################################################

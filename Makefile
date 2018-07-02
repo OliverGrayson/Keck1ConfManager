@@ -1,5 +1,5 @@
 
-override SYSNAM = kss/kcwi/scripts/python/KCWIConfManager
+override SYSNAM = kss/kcwi/scripts/python/Keck1ConfManager
 override VERNUM = 1.0
 
 SUBST_STRICT = True
@@ -29,5 +29,3 @@ endif
 
 include $(KROOT)/etc/config.mk
 ################################################################################
-
-

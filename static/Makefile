@@ -1,6 +1,6 @@
 # Python module providing a high-level interface to the KCWI instrument.
 
-override SYSNAM = kss/kcwi/scripts/python/KCWIConfManager/static
+override SYSNAM = kss/kcwi/scripts/python/Keck1ConfManager/static
 override VERNUM = 1.0
 
 DIRS = fonts js css
@@ -24,5 +24,3 @@ endif
 
 include $(KROOT)/etc/config.mk
 ################################################################################
-
-

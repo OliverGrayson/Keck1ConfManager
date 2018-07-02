@@ -1,10 +1,10 @@
 # Python module providing a high-level interface to the KCWI instrument.
 
-override SYSNAM = kss/kcwi/scripts/python/KCWIConfManager/static/fonts
+override SYSNAM = kss/kcwi/scripts/python/Keck1ConfManager/static/fonts
 override VERNUM = 1.0
 
 RELDAT = $(wildcard glyphicons*)
-DATSUB = KCWIConfManager/static/fonts
+DATSUB = Keck1ConfManager/static/fonts
 
 
 ################################################################################
