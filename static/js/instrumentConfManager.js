@@ -37,8 +37,9 @@ angular.module('myApp', [])
         $scope.current = $scope.instruments[inst];
 
         // use JQuery to fill in inst specific Bootstrap things
-        $('#configurationTable').html($scope.current.configurationTable);
+        // $('#configurationTable').html($scope.current.configurationTable);
         $('#configurationRow').html($scope.current.configurationRow);
+        $('#dataEntryForm').html($scope.current.dataEntryForm)
 
         console.log("Active instrument:", inst);
     }
