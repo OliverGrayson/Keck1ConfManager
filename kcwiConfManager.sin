@@ -1,0 +1,187 @@
+#! @KPYTHON3@
+
+import sys
+import subprocess
+import os
+
+from pymongo import MongoClient
+from bson.objectid import ObjectId
+from flask import Flask,render_template,jsonify,json,request
+#from fabric.api import *
+
+import instrumentConf
+
+reldir = os.getenv('RELDIR')
+datadir = os.path.join(reldir, 'data', 'InstrumentConfManager')
+
+template_dir = os.path.join(datadir, 'templates')
+template_dir = os.path.abspath(template_dir)
+
+static_dir = os.path.join(datadir, 'static')
+static_dir = os.path.abspath(static_dir)
+
+application = Flask(__name__, template_folder=template_dir,
+                    static_folder=static_dir)
+
+# initialize database connections
+client = MongoClient('observinglogs')
+db = {
+    # KCWIdb: kcwiConf(client.KCWI),
+    'HIRES': instrumentConf.instrumentDB(instrumentConf.HIRES_CONF, client.HIRES),
+    'LRIS': instrumentConf.instrumentDB(instrumentConf.LRIS_CONF, client.LRIS),
+    'MOSFIRE': instrumentConf.instrumentDB(instrumentConf.MOSFIRE_CONF, client.MOSFIRE)
+    }
+
+
+# TODO i'm not sure the try/except should be commented out here, talk to Luca
+@application.route("/addConfiguration",methods=['POST'])
+def addConfiguration():
+    # try:
+        json_data = request.json['info']
+        instrument = db[request.json['instrument']]
+        print(json_data)
+        instrument.put(json_data)
+        return jsonify(status='OK',message='inserted successfully')
+
+    # except Exception as e:
+    #     return jsonify(status='ERROR',message=str(e))
+
+
+@application.route('/')
+def showConfigurationsList():
+    return render_template('list.html')
+
+
+@application.route('/getConfiguration',methods=['POST'])
+def getConfiguration():
+    #print(request.url_root)
+    #print(request.url)
+    #print(request.args)
+    #print(request.args.keys())
+    try:
+        instrument = db[request.json['instrument']]
+        configurationId = request.json['id']
+        configurationDetail=instrument.get(configurationId)
+        sys.stdout.write( "Retrieved this configuration %s\n" % (str(configurationDetail)))
+        return json.dumps(configurationDetail)
+    except Exception as e:
+        return str(e)
+
+
+@application.route('/updateConfiguration',methods=['POST'])
+def updateConfiguration():
+    try:
+        instrument = db[request.json['instrument']]
+        data = request.json['info']
+        configurationId = data['id']
+        instrument.update(configurationId, data)
+        return jsonify(status='OK',message='updated successfully')
+    except Exception as e:
+        return jsonify(status='ERROR',message=str(e))
+
+
+@application.route("/getConfigurationList",methods=['POST'])
+def getConfigurationList():
+    #try:
+        instrument = db[request.json['instrument']]
+        program = request.json['progname']
+        #program = 'prog1'
+        configurationList = instrument.get_all_configs(program)
+        #sys.stdout.write( str(json.dumps(configurationList)) + "\n")
+        return json.dumps(configurationList)
+    #except Exception as e:
+        #return str(e)
+
+
+@application.route("/saveAllConfigurations", methods=['POST'])
+def saveAllConfigurations():
+    try:
+        program = request.json['progname']
+    except Exception as e:
+        sys.stdout.write( 'The program is not defined (%s) \n' % (e))
+        return jsonify(status='ERROR', message=str(e))
+
+    try:
+        instrument = db[request.json['instrument']]
+        configurations = instrument.get_all_configs(program)
+    except Exception as e:
+        sys.stdout.write( 'Error retrieving configurations for program %s (%s) \n' % (program, e))
+        return jsonify(status='ERROR', message=str(e))
+
+    for configuration in configurations:
+        try:
+            instrument.save_state(configuration['id'])
+        except Exception as e:
+            sys.stdout.write( 'Error retrieving configuration %s (%s) \n' % (configuration['id'], e))
+            return jsonify(status='ERROR', message=str(e))
+
+    return jsonify(status='OK', message="All configurations have been saved to outdir")
+
+
+@application.route("/saveConfiguration",methods=['POST'])
+def saveConfiguration():
+    try:
+        instrument = db[request.json['instrument']]
+        configurationId = request.json['id']
+        configurationDetail = instrument.save_state(configurationId)
+        return jsonify(status='OK',message="State file saved successfully")
+
+    except Exception as e:
+        sys.stdout.write( 'Error is ' + str(e) + '\n')
+        return jsonify(status='ERROR',message=str(e))
+
+
+@application.route("/executeConfiguration",methods=['POST'])
+def executeConfiguration():
+    try:
+        instrument = db[request.json['instrument']]
+        configurationId = request.json['id']
+        configurationDetail = instrument.execute(configurationId)
+        return jsonify(status='OK',message="Execution was successful")
+
+    except Exception as e:
+        sys.stdout.write( 'Error is ' + str(e) + '\n')
+        return jsonify(status='ERROR',message=str(e))
+
+
+@application.route("/deleteConfiguration",methods=['POST'])
+def deleteConfiguration():
+    try:
+        instrument = db[request.json['instrument']]
+        configurationId = request.json['id']
+        instrument.delete(configurationId)
+        return jsonify(status='OK',message='deletion successful')
+    except Exception as e:
+        return jsonify(status='ERROR',message=str(e))
+
+
+@application.route("/sendFile",methods=['POST'])
+def sendFile():
+    data={}
+    content = request.json['file'].split("\n")
+    program = request.json['progname']
+    filename = request.json['filename']
+    print(content)
+    print("Progname: %s \n" % program)
+    print("File name: %s \n" % filename)
+    for line in content:
+        print(line)
+        try:
+            key = line.split("=")[0].strip()
+            value = line.split("=")[1].strip()
+            data[key]=value
+        except:
+            pass
+    try:
+        instrument = db[request.json['instrument']]
+        instrument.put_from_file(data,program,filename)
+        return jsonify(status='OK',message="Configuration uploaded")
+    except Exception as e:
+        print("Failed to add to database\n")
+        return jsonify(status='ERROR',message="Failed to upload: %s" % (str(e)))
+    #print(data)
+
+
+
+if __name__ == "__main__":
+    application.run(host='0.0.0.0', port=5001, debug=False)
