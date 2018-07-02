@@ -4,64 +4,11 @@ angular.module('myApp', [])
     // initial settings
     $scope = {
         current = {},
-        instruments: {
-            'kcwi': {
-                name: "KCWI"
-                info: {},
-                showAdd: true,
-                showOption: false,
-                filters: ['KBlue', 'None'],
-                gratings: ['BL','BM','BH1','BH2','BH3','None'],
-                slicers: ['Small','Medium','Large','FPCam'],
-                maskpositions: ['Open','Mask'],
-                progname: ""
-            },
-            'hires': {
-                name: "HIRES"
-                info: {},
-                showAdd: true,
-                showOption: false,
-                crossdisperser: ['Red', 'Blue'],
-                slits: ['B1', 'B2', 'B3', 'B4', 'B5', 'C1', 'C2', 'C3', 'C4', 'C5',
-                        'D1', 'D2', 'D3', 'D4', 'D5', 'E1', 'E2', 'E3', 'E4', 'E5'
-                       ]
-                filters: ['RG610', 'OG530', 'GG475', 'KV418', 'KV408',
-                          'KV380', 'KV370', 'WG335'
-                         ]
-                rotatormode: ['Vertical', 'Position Angle', 'Physical', 'None'],
-                rotatorvalue: "",
-                iodinecell: ['On', 'Off'],
-                progname: ""
-            },
-            'lris': {
-                name: 'LRIS'
-                info: {},
-                showAdd: true,
-                showOption: false,
-                detector: ['Blue', 'Red']
-
-                filters: ['KBlue', 'None'],
-                slits: ['12', '24', '48']
-                gratings: ['BL','BM','BH1','BH2','BH3','None'],
-                slicers: ['Small','Medium','Large','FPCam'],
-                maskpositions: ['Open','Mask'],
-                progname: ""
-            },
-            'mosfire': {
-                name: 'MOSFIRE'
-                info: {},
-                showAdd: true,
-                showOption: false,
-                filters: ['KBlue', 'None'],
-                gratings: ['BL','BM','BH1','BH2','BH3','None'],
-                slicers: ['Small','Medium','Large','FPCam'],
-                maskpositions: ['Open','Mask'],
-                progname: ""
-            }
-        }
+        // from instrumentConfData.js for legibility and neatness
+        instruments: INSTRUMENT_CONFIGURATIONS
     }
 
-    $scope.current.info = {};
+    // $scope.info = {};
     // $scope.showAdd = true;
     // $scope.showOption = false;
     // $scope.filters=['KBlue','None'];
@@ -70,7 +17,11 @@ angular.module('myApp', [])
     // $scope.maskpositions=['Open','Mask'];
     // $scope.progname = "";
 
-    // FUNCTIONS FOR STATE FILES
+
+    /*
+    FUNCTIONS FOR STATE FILES
+    general $scope methods will modify attributes of $scope.current
+    */
 
     // display content
     $scope.showContent = function($fileContent){
@@ -79,7 +30,13 @@ angular.module('myApp', [])
     }
 
     $scope.swapInstrument = function(inst){
+        // TODO need to test if this carries over functions of scope.instrument
         $scope.current = $scope.instruments[inst];
+
+        // use JQuery to fill in inst specific Bootstrap things
+        $('#configurationTable').html($scope.current.configurationTable);
+        $('#configurationRow').html($scope.current.configurationRow);
+
         console.log("Active instrument:", inst);
     }
 
@@ -100,8 +57,8 @@ angular.module('myApp', [])
             $scope.current.content="";
             $scope.showlist();
             //$('#addPopUp').modal('hide')
-            $scope.current.info = {}
-            $scope.current.message=response.data.message
+            $scope.current.info = {};
+            $scope.current.message=response.data.message;
         }, function(error) {
             console.log(error);
         });
@@ -290,9 +247,29 @@ angular.module('myApp', [])
         $('#executeConfirm').modal('show');
     }
 
+    // post the updated configuration
+    $scope.updateConfiguration = function(id){
+        $http({
+            method: 'POST',
+            url: '/updateConfiguration',
+            data: {info:$scope.current.info}
+        }).then(function(response) {
+            $scope.current.message="";
+            console.log(response.data);
+            $scope.showlist();
+            $('.popup').modal('hide');
+        }, function(error) {
+            console.log(error);
+        });
+    }
+
+
+    /*
+    instrument specific functions
+    */
 
     // set default detector values
-    $scope.DefaultDetector = function(){
+    $scope.instruments['KCWI'].DefaultDetector = function(){
         $scope.info.binningb="2,2";
         $scope.info.ccdmodeb=0;
         $scope.info.gainmulb=10;
@@ -300,62 +277,43 @@ angular.module('myApp', [])
     }
 
     // set default cal unit values
-    $scope.DefaultCalUnit = function(){
+    $scope.instruments['KCWI'].DefaultCalUnit = function(){
         $scope.info.cal_mirror="Sky";
         $scope.info.polarizer="Sky";
     }
 
     // edit an existing configuration (DETECTOR only)
-    $scope.editDetector = function(id){
-        $scope.info.id = id;
+    $scope.instruments['KCWI'].editDetector = function(id){
+        $scope.current.info.id = id;
         $http({
             method: 'POST',
             url: '/getConfiguration',
-            data: {id:$scope.info.id}
+            data: {id:$scope.current.info.id}
         }).then(function(response) {
-            $scope.message="";
+            $scope.current.message="";
             console.log(response);
-            $scope.info = response.data;
+            $scope.current.info = response.data;
             $('#detectorPopUp').modal('show')
         }, function(error) {
             console.log(error);
         });
     }
     // edit an existing configuration (CAL UNIT only)
-    $scope.editCalunit = function(id){
-        $scope.info.id = id;
+    $scope.instruments['KCWI'].editCalunit = function(id){
+        $scope.current.info.id = id;
         $http({
             method: 'POST',
             url: '/getConfiguration',
-            data: {id:$scope.info.id}
+            data: {id:$scope.current.info.id}
         }).then(function(response) {
-            $scope.message="";
+            $scope.current.message="";
             console.log(response);
-            $scope.info = response.data;
+            $scope.current.info = response.data;
             $('#calunitPopUp').modal('show')
         }, function(error) {
             console.log(error);
         });
     }
-    // post the updated configuration
-    $scope.updateConfiguration = function(id){
-        $http({
-            method: 'POST',
-            url: '/updateConfiguration',
-            data: {info:$scope.info}
-        }).then(function(response) {
-            $scope.message="";
-            console.log(response.data);
-            $scope.showlist();
-            $('#addPopUp').modal('hide')
-            $('#detectorPopUp').modal('hide')
-            $('#calunitPopUp').modal('hide')
-        }, function(error) {
-            console.log(error);
-        });
-    }
-
-
 
     // Calibrations
     // controls the "select calibrations" popup
