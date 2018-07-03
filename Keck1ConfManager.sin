@@ -9,8 +9,10 @@ from bson.objectid import ObjectId
 from flask import Flask,render_template,jsonify,json,request
 #from fabric.api import *
 
-# config library in instrumentConf.py
-from instrumentConf import *
+# config libraries/conf files
+import lib.KCWIConf, lib.LRISConf, lib.HIRESConf, lib.MOSFIREConf
+from lib.instrumentConf import *
+
 
 reldir = os.getenv('RELDIR')
 datadir = os.path.join(reldir, 'data', 'InstrumentConfManager')
@@ -27,27 +29,25 @@ application = Flask(__name__, template_folder=template_dir,
 # initialize database connections
 # uses instrumentConf.py functions and data
 client = MongoClient('observinglogs')
-instruments = instruments()
 db = {
-     'KCWI': instrumentDB(instruments.KCWI_CONF, client.KCWI),
-     'HIRES': instrumentDB(instruments.HIRES_CONF, client.HIRES),
-     'LRIS': instrumentDB(instruments.LRIS_CONF, client.LRIS),
-     'MOSFIRE': instrumentDB(instruments.MOSFIRE_CONF, client.MOSFIRE)
+     'KCWI': instrumentDB(lib.KCWIConf.KCWI_CONF, client.KCWI),
+     'HIRES': instrumentDB(lib.HIRESConf.HIRES_CONF, client.HIRES),
+     'LRIS': instrumentDB(lib.LRISConf.LRIS_CONF, client.LRIS),
+     'MOSFIRE': instrumentDB(lib.MOSFIREConf.MOSFIRE_CONF, client.MOSFIRE)
      }
 
 
-# TODO i'm not sure the try/except should be commented out here, talk to Luca
 @application.route("/addConfiguration",methods=['POST'])
 def addConfiguration():
-    # try:
+    try:
         json_data = request.json['info']
         instrument = db[request.json['instrument']]
         print(json_data)
         instrument.put(json_data)
         return jsonify(status='OK',message='inserted successfully')
 
-    # except Exception as e:
-    #     return jsonify(status='ERROR',message=str(e))
+    except Exception as e:
+        return jsonify(status='ERROR',message=str(e))
 
 
 @application.route('/')
@@ -85,15 +85,15 @@ def updateConfiguration():
 
 @application.route("/getConfigurationList",methods=['POST'])
 def getConfigurationList():
-    #try:
+    try:
         instrument = db[request.json['instrument']]
         program = request.json['progname']
         #program = 'prog1'
         configurationList = instrument.get_all_configs(program)
         #sys.stdout.write( str(json.dumps(configurationList)) + "\n")
         return json.dumps(configurationList)
-    #except Exception as e:
-        #return str(e)
+    except Exception as e:
+        return str(e)
 
 
 @application.route("/saveAllConfigurations", methods=['POST'])

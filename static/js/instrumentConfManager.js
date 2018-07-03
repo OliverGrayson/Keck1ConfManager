@@ -38,9 +38,22 @@ angular.module('myApp', [])
 
         // use JQuery to fill in instrument specific Angular html blocks
         // $('#configurationTable').html($scope.current.configurationTable);
-        $('#configurationRow').html($scope.current.configurationRow);
-        $('#dataEntryForm').html($scope.current.dataEntryForm);
-        $('#defaultControls').html($scope.current.defaultControls);
+
+        for (var elem in $scope.current.htmldata) {
+
+            var dat = $scope.current.htmldata[elem];
+
+            var Jdat = $(dat);
+            $(elem).html(Jdat);
+
+            var Jelem = $(elem);
+
+            angular.element().injector().invoke(function($compile) {
+              var scope = angular.element(Jelem).scope();
+              $compile(Jelem)(scope);
+            });
+        });
+
 
         // show/hide popups
         $('.popup').modal('hide');
