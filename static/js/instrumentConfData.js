@@ -70,7 +70,13 @@ var INSTRUMENT_CONFIGURATIONS = {
             <div class="form-group">
                 <label for="txtfocusB" class="control-label">Focus:</label>
                 <input type="text" class="form-control" ng-model="current.info.focusb" id="txtfocusb">
-            </div>`
+            </div>`,
+        defaultControls: `
+            <button id="btnDefaultDetector" ng-click="current.DefaultDetector()" type="button" class="btn btn-primary dynamic">Default Det. Conf.</button>
+            <button id="btnDefaultCalUnit" ng-click="current.DefaultCalUnit()" type="button" class="btn btn-primary dynamic">Default Cal. Unit</button>
+            <button type="button"  class="btn btn-default" data-dismiss="modal">Close</button>
+            <button ng-show="showAdd" id="btnAdd" ng-click="addConfiguration()" type="button" class="btn btn-primary">Add configuration</button>
+            <button ng-show="!showAdd" id="btnAdd" ng-click="updateConfiguration()" type="button" class="btn btn-primary">Update</button>`
     },
     'hires': {
         name: "HIRES"

@@ -36,10 +36,14 @@ angular.module('myApp', [])
         // TODO need to test if this carries over functions of scope.instrument
         $scope.current = $scope.instruments[inst];
 
-        // use JQuery to fill in inst specific Bootstrap things
+        // use JQuery to fill in instrument specific Angular html blocks
         // $('#configurationTable').html($scope.current.configurationTable);
         $('#configurationRow').html($scope.current.configurationRow);
-        $('#dataEntryForm').html($scope.current.dataEntryForm)
+        $('#dataEntryForm').html($scope.current.dataEntryForm);
+        $('#defaultControls').html($scope.current.defaultControls);
+
+        // show/hide popups
+        $('.popup').modal('hide');
 
         console.log("Active instrument:", inst);
     }
@@ -286,7 +290,7 @@ angular.module('myApp', [])
     }
 
     // edit an existing configuration (DETECTOR only)
-    $scope.instruments['KCWI'].editDetector = function(id){
+    $scope.editDetector = function(id){
         $scope.current.info.id = id;
         $http({
             method: 'POST',
@@ -296,13 +300,13 @@ angular.module('myApp', [])
             $scope.current.message="";
             console.log(response);
             $scope.current.info = response.data;
-            $('#detectorPopUp').modal('show')
+            $("."+$scope.current.name+" .detectorPopUp").modal('show');
         }, function(error) {
             console.log(error);
         });
     }
     // edit an existing configuration (CAL UNIT only)
-    $scope.instruments['KCWI'].editCalunit = function(id){
+    $scope.editCalunit = function(id){
         $scope.current.info.id = id;
         $http({
             method: 'POST',
@@ -312,7 +316,7 @@ angular.module('myApp', [])
             $scope.current.message="";
             console.log(response);
             $scope.current.info = response.data;
-            $('#calunitPopUp').modal('show')
+            $("."+$scope.current.name+" .calUnitPopUp").modal('show');
         }, function(error) {
             console.log(error);
         });
