@@ -37,23 +37,23 @@ angular.module('myApp', [])
         $scope.current = $scope.instruments[inst];
 
         // use JQuery to fill in instrument specific Angular html blocks
-        // $('#configurationTable').html($scope.current.configurationTable);
-
         for (var elem in $scope.current.htmldata) {
 
-            var dat = $scope.current.htmldata[elem];
+            if ($scope.current.htmldata.hasOwnProperty(elem)) {
+                var dat = $scope.current.htmldata[elem];
 
-            var Jdat = $(dat);
-            $(elem).html(Jdat);
+                var Jdat = $(dat);
+                $(elem).html(Jdat);
 
-            var Jelem = $(elem);
+                var Jelem = $(elem);
 
-            angular.element().injector().invoke(function($compile) {
-              var scope = angular.element(Jelem).scope();
-              $compile(Jelem)(scope);
-            });
+                angular.element().injector().invoke(function($compile) {
+                  var scope = angular.element(Jelem).scope();
+                  $compile(Jelem)(scope);
+                });
+            }
+
         });
-
 
         // show/hide popups
         $('.popup').modal('hide');
@@ -303,7 +303,7 @@ angular.module('myApp', [])
     }
 
     // edit an existing configuration (DETECTOR only)
-    $scope.editDetector = function(id){
+    $scope.instruments['KCWI'].editDetector = function(id){
         $scope.current.info.id = id;
         $http({
             method: 'POST',
@@ -319,7 +319,7 @@ angular.module('myApp', [])
         });
     }
     // edit an existing configuration (CAL UNIT only)
-    $scope.editCalunit = function(id){
+    $scope.instruments['KCWI'].editCalunit = function(id){
         $scope.current.info.id = id;
         $http({
             method: 'POST',

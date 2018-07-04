@@ -6,7 +6,7 @@ import os
 
 from pymongo import MongoClient
 from bson.objectid import ObjectId
-from flask import Flask,render_template,jsonify,json,request
+from flask import Flask,render_template,jsonify,json,request#,login?
 #from fabric.api import *
 
 # config libraries/conf files
@@ -185,6 +185,10 @@ def sendFile():
     #print(data)
 
 
+@application.route("/login",methods=['POST'])
+def login():
+    # login using flask-login
+    break
 
 if __name__ == "__main__":
     application.run(host='0.0.0.0', port=5001, debug=False)
