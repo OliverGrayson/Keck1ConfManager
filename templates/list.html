@@ -43,7 +43,7 @@
             <ul class="nav nav-pills pull-right">
                 <li role="presentation" class="active"><a href="#AddButton" data-toggle="modal" ng-click="showAddPopUp()" >Add Configuration</a></li>
                 <li role="presentation" class="active"><a href="#SelectButton" data-toggle="modal" ng-click="showProgPopUp()" >Select Program</a></li>
-                <select id="swapInstrument" class="active" ng-model="test" ng-change="swapInstrument(this.value)" >
+                <select id="swapInstrument" class="active" ng-model="name" ng-change="swapInstrument()" >
                     <option  disabled value=''>Instrument</option>
                     <option value='KCWI'>KCWI</option>
                     <option value='HIRES'>HIRES</option>
@@ -66,12 +66,13 @@
                 <thead>
                     <tr id="configurationTable">
                         <th>#</th>
-                        <th ng-repeat="key in current.configurations[0]">{{'{{key}}'}}</td>
+                        <th ng-repeat="(key, val) in current.configurations[0]">{{'{{key}}'}}</td>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr id="configurationRow" ng-repeat="configuration in current.configurations">
-                            <td ng-repeat="key in configuration">{{'{{configuration[key]}}'}}</td>
+                        <tr id="configurationRow" ng-repeat="configuration in current.configurations track by $index">
+                            <td >{{'{{$index + 1}}'}}</td>
+                            <td ng-repeat="(key, val) in configuration">{{'{{val}}'}}</td>
                             <td><span style="cursor:pointer;" ng-click="editDetector(configuration.id)" class="glyphicon glyphicon-camera" aria-hidden="true"></span></td>
                             <td><span style="cursor:pointer;" ng-click="editCalunit(configuration.id)" class="glyphicon glyphicon-flash" aria-hidden="true"></span></td>
                             <td><span style="cursor:pointer;" ng-click="editConfiguration(configuration.id)" class="glyphicon glyphicon-pencil" aria-hidden="true"></span></td>

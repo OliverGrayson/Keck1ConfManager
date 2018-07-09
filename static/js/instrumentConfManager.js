@@ -6,7 +6,7 @@ var myApp = angular.module('myApp', [])
 
     // default to populate the fields with
     $scope.current = $scope.instruments['KCWI'];
-    $scope.current.progname = "U263";
+    // $scope.current.progname = "U263";
     console.log($scope.current)
     // $scope.info = {};
     // $scope.showAdd = true;
@@ -54,30 +54,28 @@ var myApp = angular.module('myApp', [])
         console.log("File content updated");
     }
 
-    $scope.swapInstrument = function(inst){
+    $scope.swapInstrument = function(){
         // TODO need to test if this carries over functions of scope.instrument
-        $scope.current = $scope.instruments[inst];
+        $scope.current = $scope.instruments[$scope.name];
 
-        console.log($scope.current)
+        console.log("active instrument ", $scope.name, $scope.current);
 
         // use JQuery to fill in instrument specific Angular html blocks
-        for (var elem in $scope.current.htmldata) {
-            var Jdat = $(dat);
-            $(elem).html(Jdat);
-
-            var Jelem = $(elem);
-
-            angular.element().injector().invoke(function($compile) {
-              var scope = angular.element(Jelem).scope();
-              $compile(Jelem)(scope);
-            });
-
-        }
+        // for (var elem in $scope.current.htmldata) {
+        //     var Jdat = $(dat);
+        //     $(elem).html(Jdat);
+        //
+        //     var Jelem = $(elem);
+        //
+        //     angular.element().injector().invoke(function($compile) {
+        //       var scope = angular.element(Jelem).scope();
+        //       $compile(Jelem)(scope);
+        //     });
+        //
+        // }
 
         // show/hide popups
         $('.popup').modal('hide');
-
-        console.log("Active instrument:", inst);
     }
 
     // send the file to the backend to be uploaded to the database
@@ -96,7 +94,7 @@ var myApp = angular.module('myApp', [])
         }).then(function(response) {
             $scope.current.message="";
             $scope.current.content="";
-            $scope.showlist();
+            $scope.showList();
             //$('#addPopUp').modal('hide')
             $scope.current.info = {};
             $scope.current.message=response.data.message;
@@ -109,7 +107,7 @@ var myApp = angular.module('myApp', [])
     $scope.keyEnter = function(keyEvent) {
         if (keyEvent.which === 13) {
             $('#progPopUp').modal('hide')
-            $scope.showlist();
+            $scope.showList();
         }
     }
 
@@ -137,7 +135,7 @@ var myApp = angular.module('myApp', [])
             }
         }).then(function(response) {
             $scope.current.message="";
-            $scope.showlist();
+            $scope.showList();
             $('#addPopUp').modal('hide')
             $scope.current.info = {}
         }, function(error) {
@@ -237,7 +235,7 @@ var myApp = angular.module('myApp', [])
             $scope.current.message="";
             console.log(response.data);
             $scope.current.deleteConfigurationId = '';
-            $scope.showlist();
+            $scope.showList();
             $('#deleteConfirm').modal('hide')
         }, function(error) {
             console.log(error);
@@ -306,7 +304,7 @@ var myApp = angular.module('myApp', [])
         }).then(function(response) {
             $scope.current.message="";
             console.log(response.data);
-            $scope.showlist();
+            $scope.showList();
             $('.popup').modal('hide');
         }, function(error) {
             console.log(error);

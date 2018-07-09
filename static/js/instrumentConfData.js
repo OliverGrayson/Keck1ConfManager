@@ -9,10 +9,12 @@ var INSTRUMENT_CONFIGURATIONS = {
         'showAdd': true,
         'showOption': false,
         'progname': "",
-        'filters': ['KBlue', 'None'],
-        'gratings': ['BL','BM','BH1','BH2','BH3','None'],
-        'slicers': ['Small','Medium','Large','FPCam'],
-        'maskpositions': ['Open','Mask'],
+        'data': {
+            'filters': ['KBlue', 'None'],
+            'gratings': ['BL','BM','BH1','BH2','BH3','None'],
+            'slicers': ['Small','Medium','Large','FPCam'],
+            'maskpositions': ['Open','Mask']
+        },
         'htmldata': {
 
             '#configurationRow': `
