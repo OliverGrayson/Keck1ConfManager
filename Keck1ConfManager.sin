@@ -14,8 +14,9 @@ import lib.KCWIConf, lib.LRISConf, lib.HIRESConf, lib.MOSFIREConf
 from lib.instrumentConf import *
 
 
-reldir = os.getenv('RELDIR')
-datadir = os.path.join(reldir, 'data', 'InstrumentConfManager')
+# reldir = os.getenv('RELDIR')
+# datadir = os.path.join(reldir, 'data', 'Keck1ConfManager')
+datadir = os.path.dirname(os.path.realpath(__file__))
 
 template_dir = os.path.join(datadir, 'templates')
 template_dir = os.path.abspath(template_dir)
@@ -68,7 +69,8 @@ def getConfiguration():
         sys.stdout.write( "Retrieved this configuration %s\n" % (str(configurationDetail)))
         return json.dumps(configurationDetail)
     except Exception as e:
-        return str(e)
+        # return str(e)
+        print(e)
 
 
 @application.route('/updateConfiguration',methods=['POST'])
@@ -80,7 +82,8 @@ def updateConfiguration():
         instrument.update(configurationId, data)
         return jsonify(status='OK',message='updated successfully')
     except Exception as e:
-        return jsonify(status='ERROR',message=str(e))
+        # return jsonify(status='ERROR',message=str(e))
+        print(e)
 
 
 @application.route("/getConfigurationList",methods=['POST'])
@@ -91,9 +94,12 @@ def getConfigurationList():
         #program = 'prog1'
         configurationList = instrument.get_all_configs(program)
         #sys.stdout.write( str(json.dumps(configurationList)) + "\n")
+        # print(instrument,program,json.dumps(configurationList))
         return json.dumps(configurationList)
     except Exception as e:
-        return str(e)
+        # return str(e)
+        print(e)
+
 
 
 @application.route("/saveAllConfigurations", methods=['POST'])

@@ -4,16 +4,16 @@ var INSTRUMENT_CONFIGURATIONS = {
     KCWI
     */
     'KCWI': {
-        name: 'KCWI',
-        info: {},
-        showAdd: true,
-        showOption: false,
-        progname: "",
-        filters: ['KBlue', 'None'],
-        gratings: ['BL','BM','BH1','BH2','BH3','None'],
-        slicers: ['Small','Medium','Large','FPCam'],
-        maskpositions: ['Open','Mask'],
-        htmldata: {
+        'name': 'KCWI',
+        'info': {},
+        'showAdd': true,
+        'showOption': false,
+        'progname': "",
+        'filters': ['KBlue', 'None'],
+        'gratings': ['BL','BM','BH1','BH2','BH3','None'],
+        'slicers': ['Small','Medium','Large','FPCam'],
+        'maskpositions': ['Open','Mask'],
+        'htmldata': {
 
             '#configurationRow': `
                 <th scope="row">{{'{{$index+1}}'}}</th>
@@ -86,10 +86,10 @@ var INSTRUMENT_CONFIGURATIONS = {
         crossdisperser: ['Red', 'Blue'],
         slits: ['B1', 'B2', 'B3', 'B4', 'B5', 'C1', 'C2', 'C3', 'C4', 'C5',
                 'D1', 'D2', 'D3', 'D4', 'D5', 'E1', 'E2', 'E3', 'E4', 'E5'
-               ]
+            ],
         filters: ['RG610', 'OG530', 'GG475', 'KV418', 'KV408',
                   'KV380', 'KV370', 'WG335'
-                 ]
+              ],
         rotatormode: ['Vertical', 'Position Angle', 'Physical', 'None'],
         rotatorvalue: "",
         iodinecell: ['On', 'Off'],
@@ -157,7 +157,7 @@ var INSTRUMENT_CONFIGURATIONS = {
         slitmasks: ['long_0.7', 'long_1.0', 'long_1.5', 'long_8.7',
                     'pol_1.0', 'pol_1.5', 'focus_holes'
                 ],
-        polarimeter: ['On', 'Off']
+        polarimeter: ['On', 'Off'],
         htmldata: {
 
         }

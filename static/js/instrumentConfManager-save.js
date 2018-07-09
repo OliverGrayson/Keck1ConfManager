@@ -1,8 +1,13 @@
-var myApp = angular.module('myApp', [])
-.controller('HomeCtrl', ['$scope', '$http', function($scope, $http) {
+var myApp = angular.module('myApp', []);
+
+myApp.controller('HomeCtrl', [$scope, function($scope, $http) {
 
     // initial settings
-    $scope.instruments = INSTRUMENT_CONFIGURATIONS;
+    $scope = {
+        current: {},
+        // from instrumentConfData.js for legibility and neatness
+        instruments: INSTRUMENT_CONFIGURATIONS
+    }
 
     // default to populate the fields with
     $scope.current = $scope.instruments['KCWI'];
