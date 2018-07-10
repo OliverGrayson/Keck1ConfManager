@@ -7,7 +7,7 @@ var myApp = angular.module('myApp', [])
     // default to populate the fields with
     $scope.current = $scope.instruments['KCWI'];
     // $scope.current.progname = "U263";
-    console.log($scope.current)
+    console.log($scope.current);
     // $scope.info = {};
     // $scope.showAdd = true;
     // $scope.showOption = false;
@@ -61,16 +61,15 @@ var myApp = angular.module('myApp', [])
         console.log("active instrument ", $scope.name, $scope.current);
 
         // use JQuery to fill in instrument specific Angular html blocks
-        // for (var elem in $scope.current.htmldata) {
-        //     var Jdat = $(dat);
-        //     $(elem).html(Jdat);
+        // for (var elemID in Object.keys($scope.current['htmldata'])) {
+        //     var Jdat = $($scope.current['htmldata'][elemID]); // html block to insert
+        //     var Jelem = $(elemID); // location of insert
         //
-        //     var Jelem = $(elem);
-        //
-        //     angular.element().injector().invoke(function($compile) {
-        //       var scope = angular.element(Jelem).scope();
-        //       $compile(Jelem)(scope);
-        //     });
+        //     angular.element().injector().invoke(['$compile', function($compile) {
+        //         Jelem.html(Jdat);
+        //         var tempScope = angular.element(Jelem).scope();
+        //         $compile(Jelem)(tempScope);
+        //     }]);
         //
         // }
 

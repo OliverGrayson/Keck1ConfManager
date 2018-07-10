@@ -41,15 +41,21 @@
 
         <nav>
             <ul class="nav nav-pills pull-right">
-                <li role="presentation" class="active"><a href="#AddButton" data-toggle="modal" ng-click="showAddPopUp()" >Add Configuration</a></li>
-                <li role="presentation" class="active"><a href="#SelectButton" data-toggle="modal" ng-click="showProgPopUp()" >Select Program</a></li>
-                <select id="swapInstrument" class="active" ng-model="name" ng-change="swapInstrument()" >
-                    <option  disabled value=''>Instrument</option>
-                    <option value='KCWI'>KCWI</option>
-                    <option value='HIRES'>HIRES</option>
-                    <option value='LRIS'>LRIS</option>
-                    <option value='MOSFIRE'>MOSFIRE</option>
-                </select>
+                <li role="presentation" class="active">
+                    <a href="#AddButton" data-toggle="modal" ng-click="showAddPopUp()" >Add Configuration</a>
+                </li>
+                <li role="presentation" class="active">
+                    <a href="#SelectButton" data-toggle="modal" ng-click="showProgPopUp()" >Select Program</a>
+                </li>
+                <li role="presentation" class="active">
+                    <select id="swapInstrument" ng-model="name" ng-change="swapInstrument()" >
+                        <option disabled value=''>Instrument</option>
+                        <option value='KCWI'>KCWI</option>
+                        <option value='HIRES'>HIRES</option>
+                        <option value='LRIS'>LRIS</option>
+                        <option value='MOSFIRE'>MOSFIRE</option>
+                    </select>
+                </li>
             </ul>
         </nav>
         <h4>Selected program: {{'{{current.progname}}'}}</h4>
@@ -70,16 +76,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr id="configurationRow" ng-repeat="configuration in current.configurations track by $index">
+                        <tr id="configurationRow" class="confTable" ng-repeat="configuration in current.configurations track by $index">
                             <td >{{'{{$index + 1}}'}}</td>
                             <td ng-repeat="(key, val) in configuration">{{'{{val}}'}}</td>
-                            <td><span style="cursor:pointer;" ng-click="editDetector(configuration.id)" class="glyphicon glyphicon-camera" aria-hidden="true"></span></td>
-                            <td><span style="cursor:pointer;" ng-click="editCalunit(configuration.id)" class="glyphicon glyphicon-flash" aria-hidden="true"></span></td>
-                            <td><span style="cursor:pointer;" ng-click="editConfiguration(configuration.id)" class="glyphicon glyphicon-pencil" aria-hidden="true"></span></td>
-                            <td><span style="cursor:pointer;" ng-click="duplicateConfiguration(configuration.id)" class="glyphicon glyphicon-duplicate" aria-hidden="true"></span></td>
-                            <td><span style="cursor:pointer;color:#e43309;" ng-click="confirmDelete(configuration.id)" class="glyphicon glyphicon-remove" aria-hidden="true"></span></td>
-                            <td><span style="cursor:pointer;color:#3c763d;" ng-click="saveConfiguration(configuration.id)" class="glyphicon glyphicon-save" aria-hidden="true"></span></td>
-                            <!-- <td><span style="cursor:pointer;color:#3c763d;" ng-click="confirmExecute(configuration.id,configuration.statenam)" class="glyphicon glyphicon-play" aria-hidden="true"></span></td> -->
+                            <td><span ng-click="editDetector(configuration.id)" class="glyphicon glyphicon-camera" aria-hidden="true"></span></td>
+                            <td><span ng-click="editCalunit(configuration.id)" class="glyphicon glyphicon-flash" aria-hidden="true"></span></td>
+                            <td><span ng-click="editConfiguration(configuration.id)" class="glyphicon glyphicon-pencil" aria-hidden="true"></span></td>
+                            <td><span ng-click="duplicateConfiguration(configuration.id)" class="glyphicon glyphicon-duplicate" aria-hidden="true"></span></td>
+                            <td><span class="deleteButton" ng-click="confirmDelete(configuration.id)" class="glyphicon glyphicon-remove" aria-hidden="true"></span></td>
+                            <td><span class="saveButton" ng-click="saveConfiguration(configuration.id)" class="glyphicon glyphicon-save" aria-hidden="true"></span></td>
+                            <!-- <td><span style="cursor:pointer;color:#3c763d;" ng-click="confirmExecute(configuration.id,configuration.statenam)"
+                            class="glyphicon glyphicon-play" aria-hidden="true"></span></td> -->
                         </tr>
 
                     </tbody>
@@ -152,7 +159,8 @@
     <!--         <form> -->
     <!--           <div class="form-group" -->
     <!--                <label for="txtConfigurations" class="control-label"> Configurations:</label> -->
-    <!--                <select multiple type="text" class="form-control" ng-model="selected_configurations" ng-options="x['statenam'] for x in configurations" id="txtConfigurations"></select> -->
+    <!--                <select multiple type="text" class="form-control" ng-model="selected_configurations" \
+    ng-options="x['statenam'] for x in configurations" id="txtConfigurations"></select> -->
     <!--           </div> -->
     <!--         </form> -->
     <!--       </div> -->
@@ -178,38 +186,15 @@
                             <label for="txtName" class="control-label">Configuration Name:</label>
                             <input type="text" class="form-control" ng-model="current.info.statenam" id="txtName"/>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" ng-repeat="">
                             <label for="txtSlicer" class="control-label">Slicer:</label>
                             <select type="text" class="form-control" ng-model="current.info.image_slicer" ng-options="x for x in slicers" id="txtSlicer"></select>
                         </div>
-                        <div class="form-group">
-                            <label for="txtBlueFilter" class="control-label"> Blue Filter:</label>
-                            <select type="text" class="form-control" ng-model="current.info.filterb" ng-options="x for x in filters" id="txtBluefilter"></select>
+                        <div class="form-group" ng-repeat="(item, db) for item in current.textEntryData">
+                            <label for="txt{{'{{item}}'}}B" class="control-label">{{'{{item}}'}}:</label>
+                            <input type="text" class="form-control" ng-model="current.info.{{'{{db}}'}}" id="txt{{'{{item}}'}}"/>
                         </div>
-                        <div class="form-group">
-                            <label for="txtBlueGrating" class="control-label"> Blue Grating:</label>
-                            <select type="text" class="form-control" ng-model="current.info.gratingb" ng-options="x for x in gratings" id="txtBlueGrating"></select>
-                        </div>
-                        <div class="form-group">
-                            <label for="txtCwaveB" class="control-label">Cwave:</label>
-                            <input type="text" class="form-control" ng-model="current.info.cwaveb" id="txtCwave"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="txtPwaveB" class="control-label">Pwave:</label>
-                            <input type="text" class="form-control" ng-model="current.info.pwaveb" id="txtPwave"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="txtcamangleB" class="control-label">Camera Angle:</label>
-                            <input type="text" class="form-control" ng-model="current.info.camangleb" id="txtcamangleb"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="txtNsmaskb" class="control-label">N&S mask B:</label>
-                            <select type="text" class="form-control" ng-model="current.info.nsmaskb" ng-options="x for x in maskpositions" id="txtNsmaskb"></select>
-                        </div>
-                        <div class="form-group">
-                            <label for="txtfocusB" class="control-label">Focus:</label>
-                            <input type="text" class="form-control" ng-model="current.info.focusb" id="txtfocusb"/>
-                        </div>
+
                     </form>
                 </div>
 

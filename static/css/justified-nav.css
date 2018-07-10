@@ -86,3 +86,15 @@ body {
     padding-left: 0;
   }
 }
+
+.confTable span {
+    cursor: pointer;
+}
+
+.deleteButton {
+    color:#e43309;
+}
+
+.saveButton {
+    color:#3c763d;
+}
