@@ -1,4 +1,4 @@
-var myApp = angular.module('myApp', [])
+var keck1Config = angular.module('keck1Config', [])
 .controller('HomeCtrl', ['$scope', '$http', function($scope, $http) {
 
     // initial settings
@@ -7,7 +7,7 @@ var myApp = angular.module('myApp', [])
     // default to populate the fields with
     $scope.current = $scope.instruments['KCWI'];
     // $scope.current.progname = "U263";
-    console.log($scope.current);
+    // console.log($scope.current);
     // $scope.info = {};
     // $scope.showAdd = true;
     // $scope.showOption = false;
@@ -26,7 +26,8 @@ var myApp = angular.module('myApp', [])
 
     // GET initial configuration list
     $scope.showList = function(){
-        console.log($scope.current.progname,$scope.current.name)
+        // console.log($scope.current.progname, $scope.current.name);
+
         $http({
             method: 'POST',
             url: '/getConfigurationList',
@@ -40,9 +41,9 @@ var myApp = angular.module('myApp', [])
             // for (index in response.data) {
             //     $scope.current.configurations.push(response.data[index]);
             // }
-
-            console.log('mm',$scope.current.configurations);
-            console.log('0', $scope.current.configurations[0])
+            $scope.setInstVars();
+            // console.log('mm',$scope.current.configurations);
+            // console.log('0', $scope.current.configurations[0])
         }, function(error) {
             console.log(error);
         });
@@ -58,22 +59,11 @@ var myApp = angular.module('myApp', [])
         // TODO need to test if this carries over functions of scope.instrument
         $scope.current = $scope.instruments[$scope.name];
 
-        console.log("active instrument ", $scope.name, $scope.current);
+        // console.log("active instrument ", $scope.name, $scope.current);
 
-        // use JQuery to fill in instrument specific Angular html blocks
-        // for (var elemID in Object.keys($scope.current['htmldata'])) {
-        //     var Jdat = $($scope.current['htmldata'][elemID]); // html block to insert
-        //     var Jelem = $(elemID); // location of insert
-        //
-        //     angular.element().injector().invoke(['$compile', function($compile) {
-        //         Jelem.html(Jdat);
-        //         var tempScope = angular.element(Jelem).scope();
-        //         $compile(Jelem)(tempScope);
-        //     }]);
-        //
-        // }
+        $scope.table_headings = [];
 
-        // show/hide popups
+        // hide popups
         $('.popup').modal('hide');
     }
 
@@ -91,12 +81,12 @@ var myApp = angular.module('myApp', [])
                 filename:$scope.current.fileName
             }
         }).then(function(response) {
-            $scope.current.message="";
+            $scope.message="";
             $scope.current.content="";
             $scope.showList();
             //$('#addPopUp').modal('hide')
             $scope.current.info = {};
-            $scope.current.message=response.data.message;
+            $scope.message=response.data.message;
         }, function(error) {
             console.log(error);
         });
@@ -124,7 +114,9 @@ var myApp = angular.module('myApp', [])
 
     // add a new configuration
     $scope.addConfiguration = function(){
+
         $scope.current.info.progname = $scope.current.progname;
+
         $http({
             method: 'POST',
             url:'/addConfiguration',
@@ -133,7 +125,7 @@ var myApp = angular.module('myApp', [])
                 instrument:$scope.current.name
             }
         }).then(function(response) {
-            $scope.current.message="";
+            $scope.message="";
             $scope.showList();
             $('#addPopUp').modal('hide')
             $scope.current.info = {}
@@ -143,15 +135,20 @@ var myApp = angular.module('myApp', [])
     }
     // controls the "Add configuration" popup
     $scope.showAddPopUp = function(){
-        $scope.current.showAdd = true;
+        $scope.showAdd = true;
         $scope.current.info = {};
+
+        for (var entry in $scope.current.data.textEntryData) {
+            $scope.current.info[entry]=$scope.current.data.textEntryData[entry].default;
+        }
+
         $('#addPopUp').modal('show')
     }
 
     // edit an existing configuration
     $scope.editConfiguration = function(id){
         $scope.current.info.id = id;
-        $scope.current.showAdd = false;
+        $scope.showAdd = false;
         $http({
             method: 'POST',
             url: '/getConfiguration',
@@ -160,7 +157,7 @@ var myApp = angular.module('myApp', [])
                 id:$scope.current.info.id
             }
         }).then(function(response) {
-            $scope.current.message = "";
+            $scope.message = "";
             console.log(response);
             $scope.current.info = response.data;
             $('#addPopUp').modal('show')
@@ -172,7 +169,7 @@ var myApp = angular.module('myApp', [])
     // duplicate an existing configuration
     $scope.duplicateConfiguration = function(id){
         $scope.current.info.id = id;
-        $scope.current.showAdd = false;
+        $scope.showAdd = false;
         $http({
             method: 'POST',
             url: '/getConfiguration',
@@ -181,7 +178,7 @@ var myApp = angular.module('myApp', [])
                 id:$scope.current.info.id
             }
         }).then(function(response) {
-            $scope.current.message = "";
+            $scope.message = "";
             console.log(response);
             $scope.current.info = response.data;
             $scope.addConfiguration()
@@ -193,10 +190,11 @@ var myApp = angular.module('myApp', [])
     // controls the "Select program" popup
     $scope.showProgPopUp = function(){
         $('#progPopUp').modal('show')
+        $('#txtProgramCode').focus();
     }
     // controls the "additional options" values
     $scope.showOption = function(){
-        $scope.current.showOptions=true
+        $scope.showOptions=true
     }
     // controls the "execute" popup
     $scope.showRunPopUp = function(id){
@@ -211,7 +209,7 @@ var myApp = angular.module('myApp', [])
                 id:$scope.current.info.id
             }
         }).then(function(response) {
-            $scope.current.message="";
+            $scope.message="";
             console.log(response);
             $scope.current.run = response.data;
             $scope.current.run.isRoot = false;
@@ -231,7 +229,7 @@ var myApp = angular.module('myApp', [])
                 id:$scope.current.deleteConfigurationId
             }
         }).then(function(response) {
-            $scope.current.message="";
+            $scope.message="";
             console.log(response.data);
             $scope.current.deleteConfigurationId = '';
             $scope.showList();
@@ -257,10 +255,10 @@ var myApp = angular.module('myApp', [])
                 id:$scope.current.info.id
             }
         }).then(function(response) {
-            $scope.current.message="";
+            $scope.message="";
             console.log(response.data);
             $scope.current.saveConfigurationId = '';
-            $scope.current.message = response.data.message
+            $scope.message = response.data.message
         }, function(error) {
             console.log(error);
         });
@@ -275,11 +273,11 @@ var myApp = angular.module('myApp', [])
                 id:$scope.current.executeConfigurationId
             }
         }).then(function(response) {
-            $scope.current.message="";
+            $scope.message="";
             console.log(response.data);
             $scope.current.executeConfigurationId = '';
             $('#executeConfirm').modal('hide')
-            $scope.current.message=response.data.message
+            $scope.message=response.data.message
         }, function(error) {
             console.log(error);
         });
@@ -292,22 +290,30 @@ var myApp = angular.module('myApp', [])
     }
 
     // post the updated configuration
-    $scope.updateConfiguration = function(id){
+    $scope.updateConfiguration = function(ins_id){
+        $scope.current.id = ins_id;
+        $('.popup').modal('hide');
+
+        console.log("updateConfiguration:", ins_id, $scope.current)
+
         $http({
             method: 'POST',
             url: '/updateConfiguration',
             data: {
                 instrument:$scope.current.name,
-                info:$scope.current.info
+                info:$scope.current.info,
+                id:$scope.current.id
             }
         }).then(function(response) {
-            $scope.current.message="";
+            $scope.message="";
             console.log(response.data);
             $scope.showList();
-            $('.popup').modal('hide');
         }, function(error) {
             console.log(error);
+            alert("error adding configuration");
         });
+
+
     }
 
 
@@ -340,7 +346,7 @@ var myApp = angular.module('myApp', [])
                 id:$scope.current.info.id
             }
         }).then(function(response) {
-            $scope.current.message="";
+            $scope.message="";
             console.log(response);
             $scope.current.info = response.data;
             $("."+$scope.current.name+" .detectorPopUp").modal('show');
@@ -359,13 +365,41 @@ var myApp = angular.module('myApp', [])
                 id:$scope.current.info.id
             }
         }).then(function(response) {
-            $scope.current.message="";
+            $scope.message="";
             console.log(response);
             $scope.current.info = response.data;
             $("."+$scope.current.name+" .calUnitPopUp").modal('show');
         }, function(error) {
             console.log(error);
         });
+    }
+
+    $scope.setInstVars = function() {
+
+        $scope.table_headings = [];
+
+        for (var v in $scope.current.configurations[0]) {
+            if ($scope.current.data.selectableData.hasOwnProperty(v)) {
+                console.log('selectable: ',$scope.current.data.selectableData[v])
+                $scope.table_headings.push($scope.current.data.selectableData[v].title);
+            }
+            else if ($scope.current.data.textEntryData.hasOwnProperty(v)) {
+                console.log('text entry: ', $scope.current.data.textEntryData[v])
+                $scope.table_headings.push($scope.current.data.textEntryData[v].title);
+            }
+            else {
+                $scope.table_headings.push(v);
+            }
+        }
+
+        console.log("table headings", $scope.table_headings);
+
+    }
+
+    $scope.init = function() {
+        // validate cookie
+
+        // $scope.showList();
     }
 
     // Calibrations
@@ -388,7 +422,7 @@ var myApp = angular.module('myApp', [])
     //}
 
     // show the initial list
-    $scope.showList();
+    $scope.init();
 
 }])
 .directive('onReadFile', function ($parse) {

@@ -69,7 +69,7 @@ def getConfiguration():
         sys.stdout.write( "Retrieved this configuration %s\n" % (str(configurationDetail)))
         return json.dumps(configurationDetail)
     except Exception as e:
-        # return str(e)
+        return str(e)
         print(e)
 
 
@@ -78,11 +78,11 @@ def updateConfiguration():
     try:
         instrument = db[request.json['instrument']]
         data = request.json['info']
-        configurationId = data['id']
+        configurationId = request.json['id']
         instrument.update(configurationId, data)
         return jsonify(status='OK',message='updated successfully')
     except Exception as e:
-        # return jsonify(status='ERROR',message=str(e))
+        return jsonify(status='ERROR',message=str(e))
         print(e)
 
 
@@ -97,7 +97,7 @@ def getConfigurationList():
         # print(instrument,program,json.dumps(configurationList))
         return json.dumps(configurationList)
     except Exception as e:
-        # return str(e)
+        return str(e)
         print(e)
 
 

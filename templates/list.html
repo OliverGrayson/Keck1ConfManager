@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="myApp">
+<html lang="en" ng-app="keck1Config">
 
 <head>
     <meta charset="utf-8">
@@ -14,13 +14,12 @@
 
     <!-- Bootstrap core CSS -->
     <link href="{{ url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet">
-    <!--<link href="css/bootstrap.min.css" rel="stylesheet"> -->
+
     <!-- Custom styles for this template -->
     <link href="{{ url_for('static', filename='css/jumbotron-narrow.css')}}" rel="stylesheet">
 
-
+    <!-- js libraries -->
     <script src="{{ url_for('static', filename='js/angular.js')}}"></script>
-
 
     <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js')}}"></script>
@@ -35,14 +34,17 @@
 
     <!-- title -->
 
-    <div class="container-fluid" style="width:80%">
+    <div class="container-fluid main" >
     <div class="header clearfix">
         <h3 class="text-muted">Keck I Configuration Manager: {{'{{current.name}}'}}</h3>
 
         <nav>
             <ul class="nav nav-pills pull-right">
                 <li role="presentation" class="active">
-                    <a href="#AddButton" data-toggle="modal" ng-click="showAddPopUp()" >Add Configuration</a>
+                    <a href="https://www2.keck.hawaii.edu/inst/{{'{{current.name.toLowerCase()}}'}}" ng-show="current.name!=''" target="_blank" >{{'{{current.name}}'}} Homepage</a>
+                </li>
+                <li role="presentation" class="active">
+                    <a href="#AddButton" data-toggle="modal" ng-click="showAddPopUp()" ng-show="current.progname!=''" >Add Configuration</a>
                 </li>
                 <li role="presentation" class="active">
                     <a href="#SelectButton" data-toggle="modal" ng-click="showProgPopUp()" >Select Program</a>
@@ -58,33 +60,34 @@
                 </li>
             </ul>
         </nav>
-        <h4>Selected program: {{'{{current.progname}}'}}</h4>
+        <h4 ng-show="current.progname!=''" >Selected program: {{'{{current.progname}}'}}</h4>
     </div>
 
 
     <!-- main panel with the list of configurations -->
 
     <div class="bs-example" data-example-id="panel-without-body-with-table">
-    <div class="panel panel-primary panel-resizable" style="width:100%">
+    <div class="panel panel-primary panel-resizable config-panel" >
         <div class="panel-heading">Configuration list</div>
         <div class="table-responsive">
             <table class="table table-striped">
+            <!-- <table class="pale-blue-rows"> -->
                 <thead>
                     <tr id="configurationTable">
                         <th>#</th>
-                        <th ng-repeat="(key, val) in current.configurations[0]">{{'{{key}}'}}</td>
+                        <th ng-repeat="heading in table_headings">{{'{{heading}}'}}</td>
                         </tr>
                     </thead>
                     <tbody>
                         <tr id="configurationRow" class="confTable" ng-repeat="configuration in current.configurations track by $index">
                             <td >{{'{{$index + 1}}'}}</td>
                             <td ng-repeat="(key, val) in configuration">{{'{{val}}'}}</td>
-                            <td><span ng-click="editDetector(configuration.id)" class="glyphicon glyphicon-camera" aria-hidden="true"></span></td>
-                            <td><span ng-click="editCalunit(configuration.id)" class="glyphicon glyphicon-flash" aria-hidden="true"></span></td>
+                            <td><span ng-if="current.name=='KCWI'" ng-click="current.editDetector(configuration.id)" class="glyphicon glyphicon-camera" aria-hidden="true"></span></td>
+                            <td><span ng-if="current.name=='KCWI'" ng-click="current.editCalunit(configuration.id)" class="glyphicon glyphicon-flash" aria-hidden="true"></span></td>
                             <td><span ng-click="editConfiguration(configuration.id)" class="glyphicon glyphicon-pencil" aria-hidden="true"></span></td>
                             <td><span ng-click="duplicateConfiguration(configuration.id)" class="glyphicon glyphicon-duplicate" aria-hidden="true"></span></td>
-                            <td><span class="deleteButton" ng-click="confirmDelete(configuration.id)" class="glyphicon glyphicon-remove" aria-hidden="true"></span></td>
-                            <td><span class="saveButton" ng-click="saveConfiguration(configuration.id)" class="glyphicon glyphicon-save" aria-hidden="true"></span></td>
+                            <td><span ng-click="confirmDelete(configuration.id)" class="glyphicon glyphicon-remove deleteButton" aria-hidden="true"></span></td>
+                            <td><span ng-click="saveConfiguration(configuration.id)" class="glyphicon glyphicon-save saveButton" aria-hidden="true"></span></td>
                             <!-- <td><span style="cursor:pointer;color:#3c763d;" ng-click="confirmExecute(configuration.id,configuration.statenam)"
                             class="glyphicon glyphicon-play" aria-hidden="true"></span></td> -->
                         </tr>
@@ -130,12 +133,11 @@
 
 
     <!-- program selection popup -->
-
-    <div id="progPopUp" class="modal fade bs-example-modal-md in" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div id="progPopUp" class="modal fade bs-example-modal-md in" tabindex="-1" role="dialog" aria-labelledby="programIDlabel">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h4 class="modal-title" id="myLargeModalLabel">Please enter the ID of your observing program</h4>
+                    <h4 class="modal-title" id="programIDlabel">Please enter the ID of your observing program</h4>
                 </div>
 
                 <div class="modal-footer">
@@ -146,64 +148,65 @@
     </div>
 
 
-    <!-- test of generating calibrations -->
+    <!-- popup for incorrect login cookie -->
+    <div id="badLoginPopUp" class="modal fade bs-example-modal-md in" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title" id="loginModalLabel">You are not logged in! Please log in here: <a></a></h4>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <!-- <div class="modal fade" id="runCalsPopup" role="dialog" aria-labelledby="exampleModalLabel"> -->
-    <!--   <div class="modal-dialog" role="document"> -->
-    <!--     <div class="modal-content"> -->
-    <!--       <div class="modal-header"> -->
-    <!--         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button> -->
-    <!--         <h4 class="modal-title" id="exampleModalLabel" >Select configurations:</h4> -->
-    <!--       </div> -->
-    <!--       <div class="modal-body"> -->
-    <!--         <form> -->
-    <!--           <div class="form-group" -->
-    <!--                <label for="txtConfigurations" class="control-label"> Configurations:</label> -->
-    <!--                <select multiple type="text" class="form-control" ng-model="selected_configurations" \
-    ng-options="x['statenam'] for x in configurations" id="txtConfigurations"></select> -->
-    <!--           </div> -->
-    <!--         </form> -->
-    <!--       </div> -->
-    <!--       <div class="modal-footer"> -->
-    <!-- 	<button id="btnCalibrate" ng-click="Calibrate()" type="button" class="btn btn-primary">Calibrate</button> -->
-
-    <!--     </div> -->
-    <!--   </div> -->
-    <!-- </div> -->
 
     <!-- Create a new configuration (POPUP) -->
-
-    <div class="modal fade popup" id="addPopUp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal fade popup" id="addPopUp" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="exampleModalLabel" >Add configuration info</h4>
+                    <h4 ng-if="showAdd" class="modal-title" id="addModalLabel" >Add configuration info</h4>
+                    <h4 ng-if="!showAdd" class="modal-title" id="addModalLabel" >Update configuration info</h4>
                 </div>
                 <div class="modal-body">
                     <form id="dataEntryForm">
-                        <div class="form-group">
-                            <label for="txtName" class="control-label">Configuration Name:</label>
-                            <input type="text" class="form-control" ng-model="current.info.statenam" id="txtName"/>
+                        <div ng-if="!showAdd">
+                            <div class="form-group" ng-repeat="(db_name, dat) in current.data.textEntryData">
+                                <label for="txt{{'{{db_name}}'}}" class="control-label">{{'{{dat.title}}'}}:</label>
+                                <input type="text" class="form-control" ng-model="current.info[db_name]" id="txt{{'{{db_name}}'}}" />
+                            </div>
+                            <div class="form-group" ng-repeat="(db_name, options) in current.data.selectableData">
+                                <label for="txt{{'{{db_name}}'}}" class="control-label">{{'{{options.title}}'}}:</label>
+                                <select type="text" class="form-control" ng-model="current.info[db_name]" ng-options="opt for opt in options.options" id="txt{{'{{db_name}}'}}" selected="{{'{{current.info[db_name]}}'}}"></select>
+                            </div>
+
                         </div>
-                        <div class="form-group" ng-repeat="">
-                            <label for="txtSlicer" class="control-label">Slicer:</label>
-                            <select type="text" class="form-control" ng-model="current.info.image_slicer" ng-options="x for x in slicers" id="txtSlicer"></select>
-                        </div>
-                        <div class="form-group" ng-repeat="(item, db) for item in current.textEntryData">
-                            <label for="txt{{'{{item}}'}}B" class="control-label">{{'{{item}}'}}:</label>
-                            <input type="text" class="form-control" ng-model="current.info.{{'{{db}}'}}" id="txt{{'{{item}}'}}"/>
+
+                        <div ng-if="showAdd">
+                            <div class="form-group" ng-repeat="(db_name, dat) in current.data.textEntryData">
+                                <label for="txt{{'{{db_name}}'}}" class="control-label">{{'{{dat.title}}'}}:</label>
+                                <input type="text" class="form-control" ng-model="current.info[db_name]" id="txt{{'{{db_name}}'}}" />
+                            </div>
+                            <div class="form-group" ng-repeat="(db_name, options) in current.data.selectableData">
+                                <label for="txt{{'{{db_name}}'}}" class="control-label">{{'{{options.title}}'}}:</label>
+                                <select type="text" class="form-control" ng-model="current.info[db_name]" ng-options="opt for opt in options.options" id="txt{{'{{db_name}}'}}" ></select>
+                            </div>
                         </div>
 
                     </form>
                 </div>
 
                 <div class="modal-footer" id="defaultControls">
-                    <button id="btnDefaultDetector" ng-click="current.DefaultDetector()" type="button" class="btn btn-primary dynamic">Default Det. Conf.</button>
-                    <button id="btnDefaultCalUnit" ng-click="current.DefaultCalUnit()" type="button" class="btn btn-primary dynamic">Default Cal. Unit</button>
+                    <span id="instrumentSpecificControls">
+                        <span id="KCWIcontrols" ng-if="current.name=='KCWI'">
+                            <button id="btnDefaultDetector" ng-click="current.DefaultDetector()" type="button" class="btn btn-primary dynamic" >Default Det. Conf.</button>
+                            <button id="btnDefaultCalUnit" ng-click="current.DefaultCalUnit()" type="button" class="btn btn-primary dynamic" >Default Cal. Unit</button>
+                        </span>
+                    </span>
                     <button type="button"  class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button ng-show="showAdd" id="btnAdd" ng-click="addConfiguration()" type="button" class="btn btn-primary">Add configuration</button>
-                    <button ng-show="!showAdd" id="btnAdd" ng-click="updateConfiguration()" type="button" class="btn btn-primary">Update</button>
+                    <button ng-if="showAdd" id="btnAdd" ng-click="addConfiguration()" type="button" class="btn btn-primary">Add configuration</button>
+                    <button ng-if="!showAdd" id="btnAdd" ng-click="updateConfiguration()" type="button" class="btn btn-primary">Update</button>
                 </div>
             </div>
         </div>
@@ -211,7 +214,6 @@
 
 
     <!-- Additional popup for detector information -->
-
     <div class="modal fade popup KCWI detectorPopUp" id="KCWIdetectorPopUp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
