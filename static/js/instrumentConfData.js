@@ -94,7 +94,7 @@ var INSTRUMENT_CONFIGURATIONS = {
                     'options': ['Vertical', 'Position Angle', 'Physical', 'None']
                 },
                 'filter': {
-                    'title': 'Filters',
+                    'title': 'Filter',
                     'options': ['RG610', 'OG530', 'GG475', 'KV418', 'KV408',
                                 'KV380', 'KV370', 'WG335']
                 },
@@ -114,6 +114,10 @@ var INSTRUMENT_CONFIGURATIONS = {
                 }
             },
             'textEntryData': {
+                'statenam':{
+                    'title':'Configuration Name',
+                    'default': ''
+                },
                 'rotator_val':{
                     'title':'Rotator Value'
                 },
@@ -147,7 +151,7 @@ var INSTRUMENT_CONFIGURATIONS = {
                     'title': 'Dichroic',
                     'options': ['D460', 'D500', 'D560', 'D680']
                 },
-                'filters': {
+                'filter': {
                     'title': 'Filter',
                     'options': [
                         "u'-Blue",
@@ -191,6 +195,12 @@ var INSTRUMENT_CONFIGURATIONS = {
                     'title': 'Polarimeter',
                     'options': ['On', 'Off']
                 }
+            },
+            'textEntryData': {
+                'statenam':{
+                    'title':'Configuration Name',
+                    'default': ''
+                },
             }
         }
     },
@@ -210,6 +220,12 @@ var INSTRUMENT_CONFIGURATIONS = {
                     'title': 'Filter',
                     'options': ['Y', 'J', 'H', 'K', 'Ks', 'J2', 'J3', 'H1', 'H2']
                 }
+            },
+            'textEntryData': {
+                'statenam':{
+                    'title':'Configuration Name',
+                    'default': ''
+                },
             }
         }
     }

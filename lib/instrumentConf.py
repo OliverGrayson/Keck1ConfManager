@@ -176,13 +176,13 @@ class instrumentDB(object):
         stateFile = open(self.outfile, 'w')
 
         for key in self.elements.keys():
-            kcwi_keyword = self.elements[key][0]
+            inst_keyword = self.elements[key][0]
             mongo_keyword = self.elements[key][1]
             try:
                 value = configurationDetails[mongo_keyword]
                 if value !="":
-                    sys.stdout.write( "%s = %s\n" % (kcwi_keyword, value))
-                    stateFile.write( "%s = %s\n" % (kcwi_keyword, value))
+                    sys.stdout.write( "%s = %s\n" % (inst_keyword, value))
+                    stateFile.write( "%s = %s\n" % (inst_keyword, value))
             except:
                 pass
         stateFile.write( "%s = %s\n" % ("stateid",str(id)))
@@ -200,56 +200,3 @@ class instrumentDB(object):
         command = 'show -s kbds -terse outdir'
         stdoutdata = subprocess.getoutput(command)
         return stdoutdata.split()[0]
-
-
-
-
-# class kcwiConf(instrumentConf):
-#
-#     def __init__(self, database):
-#         # format is : instrument script/keyword, database keyword,
-#         # True if mandatory, False if optional
-#         super().__init__({
-#             '1': ['statenam','statenam',True],
-#             '2': ['image_slicer','image_slicer',False],
-#             '3': ['filterb','filterb',False],
-#             '4': ['gratingb','gratingb',False],
-#             '5': ['nsmaskb','nsmaskb',False],
-#             '6': ['ampmodeb','ampmodeb',False],
-#             '7': ['gainmulb','gainmulb',False],
-#             '8': ['ccdmodeb','ccdmodeb',False],
-#             '9': ['binningb','binningb',False],
-#             '10':['cal_mirror','cal_mirror',False],
-#             '11':['polarizer','polarizer',False],
-#             '12':['cwaveb','cwaveb',False],
-#             '13':['pwaveb','pwaveb',False],
-#             '14':['progname','progname',False],
-#             '15':['camangleb','camangleb',False],
-#             '16':['focusb','focusb',False]
-#         }, database)
-
-
-
-# class hiresConf(instrumentConf):
-#
-#     def __init__(self, database):
-#         # format is : instrument script/keyword, database keyword,
-#         # True if mandatory, False if optional
-#         super().__init__({
-#             '1': ['statenam','statenam',True],
-#             '2': ['image_slicer','image_slicer',False],
-#             '3': ['filterb','filterb',False],
-#             '4': ['gratingb','gratingb',False],
-#             '5': ['nsmaskb','nsmaskb',False],
-#             '6': ['ampmodeb','ampmodeb',False],
-#             '7': ['gainmulb','gainmulb',False],
-#             '8': ['ccdmodeb','ccdmodeb',False],
-#             '9': ['binningb','binningb',False],
-#             '10':['cal_mirror','cal_mirror',False],
-#             '11':['polarizer','polarizer',False],
-#             '12':['cwaveb','cwaveb',False],
-#             '13':['pwaveb','pwaveb',False],
-#             '14':['progname','progname',False],
-#             '15':['camangleb','camangleb',False],
-#             '16':['focusb','focusb',False]
-#         }, database)

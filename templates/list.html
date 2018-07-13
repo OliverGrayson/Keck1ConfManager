@@ -17,9 +17,13 @@
 
     <!-- Custom styles for this template -->
     <link href="{{ url_for('static', filename='css/jumbotron-narrow.css')}}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/justified-nav.css')}}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/selector.css')}}" rel="stylesheet">
+
 
     <!-- js libraries -->
     <script src="{{ url_for('static', filename='js/angular.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/angular-cookies.js')}}"></script>
 
     <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js')}}"></script>
@@ -36,7 +40,10 @@
 
     <div class="container-fluid main" >
     <div class="header clearfix">
-        <h3 class="text-muted">Keck I Configuration Manager: {{'{{current.name}}'}}</h3>
+        <div class="title-header">
+            <h3 class="text-muted" ng-if="current.name!='Instrument'">Keck I Configuration Manager: {{'{{current.name}}'}}</h3>
+            <h3 class="text-muted" ng-if="current.name=='Instrument'">Keck I Configuration Manager</h3>
+        </div>
 
         <nav>
             <ul class="nav nav-pills pull-right">
@@ -46,17 +53,34 @@
                 <li role="presentation" class="active">
                     <a href="#AddButton" data-toggle="modal" ng-click="showAddPopUp()" ng-show="current.progname!=''" >Add Configuration</a>
                 </li>
-                <li role="presentation" class="active">
+                <!-- <li role="presentation" class="active">
                     <a href="#SelectButton" data-toggle="modal" ng-click="showProgPopUp()" >Select Program</a>
-                </li>
+                </li> -->
+
                 <li role="presentation" class="active">
-                    <select id="swapInstrument" ng-model="name" ng-change="swapInstrument()" >
-                        <option disabled value=''>Instrument</option>
-                        <option value='KCWI'>KCWI</option>
-                        <option value='HIRES'>HIRES</option>
-                        <option value='LRIS'>LRIS</option>
-                        <option value='MOSFIRE'>MOSFIRE</option>
-                    </select>
+                    <div class="aoyue-select animated zoomIn">
+                        <input type="radio" name="option">
+                        <i class="toggle icon icon-arrow-down"></i>
+                        <span class="placeholder">Program</span>
+                        <label class="option" ng-repeat="program in allowedPrograms track by programname">
+                            <input type="radio" name="option" id="program-{{'{{program}}'}}" ng-model="current.progname" ng-value="program" >
+                            <span class="title animated fadeIn">{{'{{program}}'}}</span>
+                        </label>
+                    </div>
+                </li>
+
+                <li role="presentation" class="active">
+                    <div class="aoyue-select animated zoomIn" ng-mouseover="this.show_opt=true" ng-mouseleave="this.show_opt=false">
+                        <input type="radio" name="option">
+                        <i class="toggle icon icon-arrow-down"></i>
+                        <span class="placeholder">{{'{{current.name}}'}}</span>
+                        <div class="hidden-options" ng-show="show_opt">
+                            <label class="option" ng-repeat="(key, dat) in instruments">
+                                <input type="radio" name="option" id="instrument-{{'{{key}}'}}" ng-model="name" ng-value="key" ng-click="swapInstrument(name)" >
+                                <span class="title animated fadeIn">{{'{{key}}'}}</span>
+                            </label>
+                        </div>
+                    </div>
                 </li>
             </ul>
         </nav>
@@ -82,8 +106,8 @@
                         <tr id="configurationRow" class="confTable" ng-repeat="configuration in current.configurations track by $index">
                             <td >{{'{{$index + 1}}'}}</td>
                             <td ng-repeat="(key, val) in configuration">{{'{{val}}'}}</td>
-                            <td><span ng-if="current.name=='KCWI'" ng-click="current.editDetector(configuration.id)" class="glyphicon glyphicon-camera" aria-hidden="true"></span></td>
-                            <td><span ng-if="current.name=='KCWI'" ng-click="current.editCalunit(configuration.id)" class="glyphicon glyphicon-flash" aria-hidden="true"></span></td>
+                            <!-- <td><span ng-if="current.name=='KCWI'" ng-click="current.editDetector(configuration.id)" class="glyphicon glyphicon-camera" aria-hidden="true"></span></td>
+                            <td><span ng-if="current.name=='KCWI'" ng-click="current.editCalunit(configuration.id)" class="glyphicon glyphicon-flash" aria-hidden="true"></span></td> -->
                             <td><span ng-click="editConfiguration(configuration.id)" class="glyphicon glyphicon-pencil" aria-hidden="true"></span></td>
                             <td><span ng-click="duplicateConfiguration(configuration.id)" class="glyphicon glyphicon-duplicate" aria-hidden="true"></span></td>
                             <td><span ng-click="confirmDelete(configuration.id)" class="glyphicon glyphicon-remove deleteButton" aria-hidden="true"></span></td>
@@ -133,7 +157,7 @@
 
 
     <!-- program selection popup -->
-    <div id="progPopUp" class="modal fade bs-example-modal-md in" tabindex="-1" role="dialog" aria-labelledby="programIDlabel">
+    <!-- <div id="progPopUp" class="modal fade bs-example-modal-md in" tabindex="-1" role="dialog" aria-labelledby="programIDlabel">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
@@ -145,7 +169,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
 
     <!-- popup for incorrect login cookie -->
@@ -153,7 +177,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h4 class="modal-title" id="loginModalLabel">You are not logged in! Please log in here: <a></a></h4>
+                    <h4 class="modal-title" id="loginModalLabel">You are not logged in! Please <a href="https://www2.keck.hawaii.edu/inst/PILogin/login.php">log in or create an account here</a>.</h4>
                 </div>
             </div>
         </div>

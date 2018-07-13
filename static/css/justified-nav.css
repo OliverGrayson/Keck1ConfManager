@@ -1,5 +1,6 @@
 body {
   padding-top: 20px;
+  background-color: #92a8d1;
 }
 
 .footer {
@@ -26,6 +27,18 @@ body {
 
 .config-panel {
     width: 100%;
+}
+
+nav {
+    height: 1em;
+}
+
+.nav-pills>li>a {
+    border-radius: 0 !important;
+}
+
+.title-header {
+    margin-bottom:1em;
 }
 
 /* Customize the nav-justified links to be fill the entire space of the .navbar */
@@ -129,6 +142,11 @@ table.paleBlueRows tfoot {
 }
 table.paleBlueRows tfoot td {
   font-size: 14px;
+}
+
+li .active {
+    overflow: hidden;
+    height: 100%;
 }
 
 

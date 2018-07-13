@@ -1,11 +1,11 @@
-var keck1Config = angular.module('keck1Config', [])
-.controller('HomeCtrl', ['$scope', '$http', function($scope, $http) {
+var keck1Config = angular.module('keck1Config', ['ngCookies'])
+.controller('HomeCtrl', ['$scope', '$http', '$cookies', function($scope, $http, $cookies) {
 
     // initial settings
     $scope.instruments = INSTRUMENT_CONFIGURATIONS;
-
+    $scope.current = {"name":"Instrument","progname":""};
     // default to populate the fields with
-    $scope.current = $scope.instruments['KCWI'];
+    // $scope.current = $scope.instruments['KCWI'];
     // $scope.current.progname = "U263";
     // console.log($scope.current);
     // $scope.info = {};
@@ -55,9 +55,11 @@ var keck1Config = angular.module('keck1Config', [])
         console.log("File content updated");
     }
 
-    $scope.swapInstrument = function(){
+    $scope.swapInstrument = function(name){
+
+        console.log('swap')
         // TODO need to test if this carries over functions of scope.instrument
-        $scope.current = $scope.instruments[$scope.name];
+        $scope.current = $scope.instruments[name];
 
         // console.log("active instrument ", $scope.name, $scope.current);
 
@@ -258,7 +260,7 @@ var keck1Config = angular.module('keck1Config', [])
             $scope.message="";
             console.log(response.data);
             $scope.current.saveConfigurationId = '';
-            $scope.message = response.data.message
+            $scope.message = response.data.message;
         }, function(error) {
             console.log(error);
         });
@@ -323,16 +325,16 @@ var keck1Config = angular.module('keck1Config', [])
 
     // set default detector values
     $scope.instruments['KCWI'].DefaultDetector = function(){
-        $scope.info.binningb="2,2";
-        $scope.info.ccdmodeb=0;
-        $scope.info.gainmulb=10;
-        $scope.info.ampmodeb=9;
+        $scope.current.info.binningb="2,2";
+        $scope.current.info.ccdmodeb=0;
+        $scope.current.info.gainmulb=10;
+        $scope.current.info.ampmodeb=9;
     }
 
     // set default cal unit values
     $scope.instruments['KCWI'].DefaultCalUnit = function(){
-        $scope.info.cal_mirror="Sky";
-        $scope.info.polarizer="Sky";
+        $scope.current.info.cal_mirror="Sky";
+        $scope.current.info.polarizer="Sky";
     }
 
     // edit an existing configuration (DETECTOR only)
@@ -349,7 +351,7 @@ var keck1Config = angular.module('keck1Config', [])
             $scope.message="";
             console.log(response);
             $scope.current.info = response.data;
-            $("."+$scope.current.name+" .detectorPopUp").modal('show');
+            $(".KCWI .detectorPopUp").modal('show');
         }, function(error) {
             console.log(error);
         });
@@ -368,36 +370,89 @@ var keck1Config = angular.module('keck1Config', [])
             $scope.message="";
             console.log(response);
             $scope.current.info = response.data;
-            $("."+$scope.current.name+" .calUnitPopUp").modal('show');
+            $(".KCWI .calUnitPopUp").modal('show');
         }, function(error) {
             console.log(error);
         });
     }
 
     $scope.setInstVars = function() {
-
         $scope.table_headings = [];
-
         for (var v in $scope.current.configurations[0]) {
             if ($scope.current.data.selectableData.hasOwnProperty(v)) {
-                console.log('selectable: ',$scope.current.data.selectableData[v])
+                // console.log('selectable: ',$scope.current.data.selectableData[v])
                 $scope.table_headings.push($scope.current.data.selectableData[v].title);
             }
             else if ($scope.current.data.textEntryData.hasOwnProperty(v)) {
-                console.log('text entry: ', $scope.current.data.textEntryData[v])
+                // console.log('text entry: ', $scope.current.data.textEntryData[v])
                 $scope.table_headings.push($scope.current.data.textEntryData[v].title);
             }
             else {
                 $scope.table_headings.push(v);
             }
         }
+    }
 
-        console.log("table headings", $scope.table_headings);
+    $scope.generateAllowedProgramList = function(keckID) {
+        $scope.allowedPrograms = [];
 
+        $http({
+            method: 'POST',
+            url: '/getAllowedPrograms',
+            data: {
+                keck_id: keckID
+            }
+        })
+        .then(function(response) {
+
+            if (response.data == {}) {
+                alert("no allowed programs for this user")
+                return;
+            }
+            for (var entry in response.data) {
+                $scope.allowedPrograms.push(entry["ProjCode"]);
+            }
+        }, function(error) {
+            console.log(error);
+        });
+
+    }
+
+    $scope.checkLogin = function() {
+        // console.log(id_cookie)
+        var id_cookie = $cookies.get('keckID');
+        console.log(id_cookie)
+
+        if (id_cookie == undefined) {
+            $("#badLoginPopUp").modal('show');
+        }
+        else {
+            $scope.generateAllowedProgramList(id_cookie);
+        }
+        // $http({
+        //     method: 'POST',
+        //     url: '/checkLogin',
+        //     data: {
+        //         keck_id: id_cookie
+        //     }
+        // }).then(function(response) {
+        //     $scope.message="";
+        //     var validity = response.data;
+        //     console.log(validity)
+        //     if (validity === "") {
+        //         $("#badLoginPopUp").modal('show');
+        //     }
+        //     else {
+        //         $scope.generateAllowedProgramList(id_cookie);
+        //     }
+        // }, function(error) {
+        //     console.log(error);
+        // });
     }
 
     $scope.init = function() {
         // validate cookie
+        $scope.checkLogin();
 
         // $scope.showList();
     }
