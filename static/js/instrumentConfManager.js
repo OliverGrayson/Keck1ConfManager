@@ -250,6 +250,15 @@ var keck1Config = angular.module('keck1Config', ['ngCookies'])
         $('#deleteConfirm').modal('show');
     }
 
+    $scope.doFileInput = function() {
+        try {
+            $('#statefile').click();
+        }
+        catch(e) {
+            console.log(e);
+        }
+    }
+
     // save configuration
     $scope.saveConfiguration = function(id){
         $scope.current.info.id = id
