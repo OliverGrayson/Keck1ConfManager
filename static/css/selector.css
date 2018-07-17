@@ -74,7 +74,7 @@ p img {
   z-index: 4;
   right: 1.5em;
   top: 1.2em;
-  color: #ccc;
+  color: black;
 }
 .aoyue-select .title,
 .aoyue-select .placeholder {
@@ -104,7 +104,7 @@ p img {
   z-index: 0;
   display: inline-block;
   width: 100%;
-  color: #999;
+  color: black;
   border-top: 0px;
 }
 
@@ -148,10 +148,10 @@ p img {
 }
 .aoyue-select label.option input:disabled ~ span.title {
   background: #f9f9f9 !important;
-  color: #aaa;
+  color: black;
 }
 .aoyue-select label.option input:disabled ~ span.title:hover {
-  color: #aaa;
+  color: black;
   background: none;
   cursor: no-drop;
 }

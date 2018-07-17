@@ -264,7 +264,7 @@ var keck1Config = angular.module('keck1Config', ['ngCookies'])
             $scope.message="";
             console.log(response.data);
             $scope.current.saveConfigurationId = '';
-            $scope.message = response.data.message;
+            alert(response.data.message);
         }, function(error) {
             console.log(error);
         });

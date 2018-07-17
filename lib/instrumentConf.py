@@ -1,5 +1,4 @@
-import sys
-import subprocess
+import sys, os, subprocess
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 
@@ -14,10 +13,11 @@ to scale later/ port to Keck 2 if we just have configuration objects
 class instrumentDB(object):
 
     # elements: keypairs, database: Mongo object
-    def __init__(self, elements, database):
+    def __init__(self, elements, database, outdir):
         # format is : instrument script/keyword, database keyword, True if mandatory, False if optional
         self.elements = elements
         self.db = database
+        self.outdir = os.getcwd() + '/' + outdir
 
 
     def get(self, configurationId):
@@ -197,6 +197,7 @@ class instrumentDB(object):
 
 
     def get_outdir(self):
-        command = 'show -s kbds -terse outdir'
-        stdoutdata = subprocess.getoutput(command)
-        return stdoutdata.split()[0]
+        # command = 'show -s kbds -terse outdir'
+        # stdoutdata = subprocess.getoutput(command)
+        # return stdoutdata.split()[0]
+        return self.outdir

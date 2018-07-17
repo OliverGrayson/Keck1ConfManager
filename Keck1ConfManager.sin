@@ -30,12 +30,13 @@ application = Flask(__name__, template_folder=template_dir,
 
 # initialize database connections
 # uses instrumentConf.py functions and data
+outdir = 'export'
 client = MongoClient('observinglogs')
 db = {
-     'KCWI': instrumentDB(lib.KCWIConf.KCWI_CONF, client.KCWI),
-     'HIRES': instrumentDB(lib.HIRESConf.HIRES_CONF, client.HIRES),
-     'LRIS': instrumentDB(lib.LRISConf.LRIS_CONF, client.LRIS),
-     'MOSFIRE': instrumentDB(lib.MOSFIREConf.MOSFIRE_CONF, client.MOSFIRE)
+     'KCWI': instrumentDB(lib.KCWIConf.KCWI_CONF, client.KCWI, outdir),
+     'HIRES': instrumentDB(lib.HIRESConf.HIRES_CONF, client.HIRES, outdir),
+     'LRIS': instrumentDB(lib.LRISConf.LRIS_CONF, client.LRIS, outdir),
+     'MOSFIRE': instrumentDB(lib.MOSFIREConf.MOSFIRE_CONF, client.MOSFIRE, outdir)
      }
 oberverDB = client.observer
 
