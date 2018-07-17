@@ -20,7 +20,6 @@
     <link href="{{ url_for('static', filename='css/justified-nav.css')}}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/selector.css')}}" rel="stylesheet">
 
-
     <!-- js libraries -->
     <script src="{{ url_for('static', filename='js/angular.js')}}"></script>
     <script src="{{ url_for('static', filename='js/angular-cookies.js')}}"></script>
@@ -48,24 +47,26 @@
         <nav>
             <ul class="nav nav-pills pull-right">
                 <li role="presentation" class="active">
-                    <a href="https://www2.keck.hawaii.edu/inst/{{'{{current.name.toLowerCase()}}'}}" ng-show="current.name!=''" target="_blank" >{{'{{current.name}}'}} Homepage</a>
+                    <a href="https://www2.keck.hawaii.edu/inst/{{'{{current.name.toLowerCase()}}'}}" ng-show="current.name!='Instrument'" target="_blank" >{{'{{current.name}}'}} Homepage</a>
                 </li>
                 <li role="presentation" class="active">
-                    <a href="#AddButton" data-toggle="modal" ng-click="showAddPopUp()" ng-show="current.progname!=''" >Add Configuration</a>
+                    <a href="#AddButton" data-toggle="modal" ng-click="showAddPopUp()" ng-show="current.progname!='Program'" >Add Configuration</a>
                 </li>
                 <!-- <li role="presentation" class="active">
                     <a href="#SelectButton" data-toggle="modal" ng-click="showProgPopUp()" >Select Program</a>
                 </li> -->
 
                 <li role="presentation" class="active">
-                    <div class="aoyue-select animated zoomIn">
+                    <div class="aoyue-select animated zoomIn" ng-mouseover="this.opt_show=true" ng-mouseleave="this.opt_show=false">
                         <input type="radio" name="option">
                         <i class="toggle icon icon-arrow-down"></i>
-                        <span class="placeholder">Program</span>
-                        <label class="option" ng-repeat="program in allowedPrograms track by programname">
-                            <input type="radio" name="option" id="program-{{'{{program}}'}}" ng-model="current.progname" ng-value="program" >
-                            <span class="title animated fadeIn">{{'{{program}}'}}</span>
-                        </label>
+                        <span class="placeholder">{{'{{current.progname}}'}}</span>
+                        <div class="hidden-options" ng-show="opt_show">
+                            <label class="option" ng-repeat="program in allowedPrograms">
+                                <input type="radio" name="option" id="program-{{'{{program}}'}}" ng-model="current.progname" ng-value="program" ng-click="showList()">
+                                <span class="title animated fadeIn">{{'{{program}}'}}</span>
+                            </label>
+                        </div>
                     </div>
                 </li>
 
@@ -84,7 +85,7 @@
                 </li>
             </ul>
         </nav>
-        <h4 ng-show="current.progname!=''" >Selected program: {{'{{current.progname}}'}}</h4>
+        <h4 ng-show="current.progname!='Program'" >Selected program: {{'{{current.progname}}'}}</h4>
     </div>
 
 

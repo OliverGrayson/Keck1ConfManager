@@ -128,6 +128,7 @@ p img {
 .aoyue-select label.option span.title:hover {
   /* color: #fff; */
   background: rgba(85, 85, 85, 1);
+  color:white;
   box-shadow: inset 0px 1px 0px rgba(0, 0, 0, 0.1);
 }
 .aoyue-select label.option input {

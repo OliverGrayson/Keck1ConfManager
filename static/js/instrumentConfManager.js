@@ -3,50 +3,47 @@ var keck1Config = angular.module('keck1Config', ['ngCookies'])
 
     // initial settings
     $scope.instruments = INSTRUMENT_CONFIGURATIONS;
-    $scope.current = {"name":"Instrument","progname":""};
-    // default to populate the fields with
-    // $scope.current = $scope.instruments['KCWI'];
-    // $scope.current.progname = "U263";
-    // console.log($scope.current);
-    // $scope.info = {};
-    // $scope.showAdd = true;
-    // $scope.showOption = false;
-    // $scope.filters=['KBlue','None'];
-    // $scope.gratings=['BL','BM','BH1','BH2','BH3','None'];
-    // $scope.slicers=['Small','Medium','Large','FPCam'];
-    // $scope.maskpositions=['Open','Mask'];
+    $scope.current = {"name":"Instrument","progname":"Program"};
 
+    $scope.mode = 'debug';
 
+    if ($scope.mode === 'debug') {
+        console.log('debug mode')
+    }
 
     /*
     FUNCTIONS FOR STATE FILES
     general $scope methods will modify attributes of $scope.current
     */
 
-
     // GET initial configuration list
     $scope.showList = function(){
         // console.log($scope.current.progname, $scope.current.name);
 
-        $http({
-            method: 'POST',
-            url: '/getConfigurationList',
-            data: {
-                progname:$scope.current.progname,
-                instrument:$scope.current.name
-            }
-        }).then(function(response) {
-            $scope.current.configurations = response.data;
-            // console.log("res", response.data);
-            // for (index in response.data) {
-            //     $scope.current.configurations.push(response.data[index]);
-            // }
-            $scope.setInstVars();
-            // console.log('mm',$scope.current.configurations);
-            // console.log('0', $scope.current.configurations[0])
-        }, function(error) {
-            console.log(error);
-        });
+        // only do stuff if instrument is set otherwise it just gets
+        // really odd and nonsensical data
+        if ($scope.current.name !== 'Instrument') {
+
+            $http({
+                method: 'POST',
+                url: '/getConfigurationList',
+                data: {
+                    progname:$scope.current.progname,
+                    instrument:$scope.current.name
+                }
+            }).then(function(response) {
+                $scope.current.configurations = response.data;
+                // console.log("res", response.data);
+                // for (index in response.data) {
+                //     $scope.current.configurations.push(response.data[index]);
+                // }
+                $scope.setInstVars();
+                // console.log('mm',$scope.current.configurations);
+                // console.log('0', $scope.current.configurations[0])
+            }, function(error) {
+                console.log(error);
+            });
+        }
     }
 
     // display content
@@ -55,12 +52,19 @@ var keck1Config = angular.module('keck1Config', ['ngCookies'])
         console.log("File content updated");
     }
 
-    $scope.swapInstrument = function(name){
+    $scope.swapInstrument = function(name) {
 
-        console.log('swap')
-        // TODO need to test if this carries over functions of scope.instrument
+        // console.log('swap')
+        var prog = $scope.current.progname;
         $scope.current = $scope.instruments[name];
 
+        // this bit makes it so you can select either the program
+        // or the instrument first and it doesn't make a difference
+        $scope.current.progname = prog;
+
+        if (prog !== 'Program'){
+            $scope.showList();
+        }
         // console.log("active instrument ", $scope.name, $scope.current);
 
         $scope.table_headings = [];
@@ -396,26 +400,30 @@ var keck1Config = angular.module('keck1Config', ['ngCookies'])
     $scope.generateAllowedProgramList = function(keckID) {
         $scope.allowedPrograms = [];
 
-        $http({
-            method: 'POST',
-            url: '/getAllowedPrograms',
-            data: {
-                keck_id: keckID
-            }
-        })
-        .then(function(response) {
+        if ($scope.mode != 'debug'){
+            $http({
+                method: 'POST',
+                url: '/getAllowedPrograms',
+                data: {
+                    keck_id: keckID
+                }
+            })
+            .then(function(response) {
 
-            if (response.data == {}) {
-                alert("no allowed programs for this user")
-                return;
-            }
-            for (var entry in response.data) {
-                $scope.allowedPrograms.push(entry["ProjCode"]);
-            }
-        }, function(error) {
-            console.log(error);
-        });
-
+                if (response.data == {}) {
+                    alert("no allowed programs for this user")
+                    return;
+                }
+                for (var entry in response.data) {
+                    $scope.allowedPrograms.push(entry["ProjCode"]);
+                }
+            }, function(error) {
+                console.log(error);
+            });
+        }
+        else {
+            $scope.allowedPrograms = ['U263', 'U202', 'E001', 'U199'];
+        }
     }
 
     $scope.checkLogin = function() {
