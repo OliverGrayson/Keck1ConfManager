@@ -98,6 +98,24 @@ nav {
   }
 }
 
+/* for the "selected program" box to be on the left */
+.program-notify {
+    float:left;
+}
+
+/* bootstrap overrides */
+.table-striped>thead{
+    background-color:#e9e9e9 !important;
+}
+.table-striped>tbody>tr:nth-of-type(even){
+    background-color:#e9e9e9 !important;
+}
+.table-striped>tbody>tr:nth-of-type(odd){
+    background-color:#f3f3f3 !important;
+}
+.table, .panel, .panel-heading {
+    border-radius: 0;
+}
 
 /* CSS for data table */
 table.paleBlueRows {
