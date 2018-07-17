@@ -52,9 +52,10 @@
                 <li role="presentation" class="active">
                     <a href="" ng-show="current.name!=='Instrument'" target="_blank" ng-click="doFileInput()" >
                         <label id="state-label" cursor="pointer" >Load State File</label>
-                        <input type="file" id="statefile" on-read-file="showContent($fileContent)" accept=".state" ></input>
                     </a>
+                    <input type="file" id="statefile" on-read-file="showContent($fileContent)" accept=".state" ></input>
                 </li>
+
 
                 <li role="presentation" class="active">
                     <a href="https://www2.keck.hawaii.edu/inst/{{'{{current.name.toLowerCase()}}'}}" ng-show="current.name!=='Instrument'" target="_blank" >{{'{{current.name}}'}} Homepage</a>
