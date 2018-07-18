@@ -35,9 +35,9 @@
 
 <body ng-controller="HomeCtrl" ng-strict-di>
 
-    <!-- title -->
+<!-- title -->
 
-    <div class="container-fluid main" >
+<div class="container-fluid main" >
     <div class="header clearfix">
         <div class="title-header">
             <h3 ng-if="current.name!='Instrument'">Keck I Configuration Manager: {{'{{current.name}}'}}</h3>
@@ -51,7 +51,7 @@
 
                 <li role="presentation" class="active">
                     <a href="" ng-show="current.name!=='Instrument'" target="_blank" ng-click="doFileInput()" >
-                        <label id="state-label" cursor="pointer" >Load State File</label>
+                        <label id="state-label" >Load State File</label>
                     </a>
                     <input type="file" id="statefile" on-read-file="showContent($fileContent)" accept=".state" ></input>
                 </li>
@@ -61,11 +61,9 @@
                     <a href="https://www2.keck.hawaii.edu/inst/{{'{{current.name.toLowerCase()}}'}}" ng-show="current.name!=='Instrument'" target="_blank" >{{'{{current.name}}'}} Homepage</a>
                     <a href="https://www2.keck.hawaii.edu/inst/" ng-show="current.name==='Instrument'" target="_blank" >Instrument Homepage</a>
                 </li>
-                <li role="presentation" class="active">
-                    <a href="#AddButton" data-toggle="modal" ng-click="showAddPopUp()" ng-show="current.progname!='Program'" >Add Configuration</a>
-                </li>
+
                 <!-- <li role="presentation" class="active">
-                    <a href="#SelectButton" data-toggle="modal" ng-click="showProgPopUp()" >Select Program</a>
+                <a href="#SelectButton" data-toggle="modal" ng-click="showProgPopUp()" >Select Program</a>
                 </li> -->
 
                 <li role="presentation" class="active">
@@ -95,52 +93,79 @@
                         </div>
                     </div>
                 </li>
+
+                <li role="presentation" class="active">
+                    <a href="#AddButton" data-toggle="modal" ng-click="showAddPopUp()" ng-show="current.progname!='Program'" >Add Configuration</a>
+                </li>
+
             </ul>
         </nav>
     </div>
 
 
-    <!-- main panel with the list of configurations -->
+<!-- main panel with the list of configurations -->
 
-    <div class="bs-example" data-example-id="panel-without-body-with-table">
+<div class="bs-example" data-example-id="panel-without-body-with-table">
+
+    <div class="table-controls">
+        <table class="table table-striped table-hover">
+            <tbody>
+                <tr class="confTable" ng-repeat="configuration in current.configurations track by $index" id="configurationRow-{{'{{$index + 1}}'}}">
+                    <td><span ng-click="editConfiguration(configuration.id)" class="glyphicon glyphicon-pencil" aria-hidden="true" title="Edit"></span></td>
+                    <td><span ng-click="duplicateConfiguration(configuration.id)" class="glyphicon glyphicon-duplicate" aria-hidden="true" title="Duplicate"></span></td>
+                    <td><span ng-click="confirmDelete(configuration.id)" class="glyphicon glyphicon-remove deleteButton" aria-hidden="true" title="Delete"></span></td>
+                    <td><span ng-click="saveConfiguration(configuration.id)" class="glyphicon glyphicon-save saveButton" aria-hidden="true" title="Save"></span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
     <div class="panel panel-primary panel-resizable config-panel" >
         <div class="panel-heading">Configuration list</div>
         <div class="table-responsive">
             <table class="table table-striped table-hover">
-            <!-- <table class="pale-blue-rows"> -->
+                <!-- <table class="pale-blue-rows"> -->
                 <thead>
                     <tr id="configurationTable">
+                        <!-- <th colspan="4"></th> -->
                         <th>#</th>
                         <th ng-repeat="heading in table_headings">{{'{{heading}}'}}</td>
                         </tr>
                     </thead>
                     <tbody>
                         <tr class="confTable" ng-repeat="configuration in current.configurations track by $index" id="configurationRow-{{'{{$index + 1}}'}}">
+
+                            <!-- <td><span ng-click="editConfiguration(configuration.id)" class="glyphicon glyphicon-pencil" aria-hidden="true" title="Edit"></span></td>
+                            <td><span ng-click="duplicateConfiguration(configuration.id)" class="glyphicon glyphicon-duplicate" aria-hidden="true" title="Duplicate"></span></td>
+                            <td><span ng-click="confirmDelete(configuration.id)" class="glyphicon glyphicon-remove deleteButton" aria-hidden="true" title="Delete"></span></td>
+                            <td><span ng-click="saveConfiguration(configuration.id)" class="glyphicon glyphicon-save saveButton" aria-hidden="true" title="Save"></span></td> -->
+
                             <td >{{'{{$index + 1}}'}}</td>
                             <td ng-repeat="(key, val) in configuration">{{'{{val}}'}}</td>
                             <!-- <td><span ng-if="current.name=='KCWI'" ng-click="current.editDetector(configuration.id)" class="glyphicon glyphicon-camera" aria-hidden="true"></span></td>
                             <td><span ng-if="current.name=='KCWI'" ng-click="current.editCalunit(configuration.id)" class="glyphicon glyphicon-flash" aria-hidden="true"></span></td> -->
-                            <td><span ng-click="editConfiguration(configuration.id)" class="glyphicon glyphicon-pencil" aria-hidden="true" title="Edit"></span></td>
-                            <td><span ng-click="duplicateConfiguration(configuration.id)" class="glyphicon glyphicon-duplicate" aria-hidden="true" title="Duplicate"></span></td>
-                            <td><span ng-click="confirmDelete(configuration.id)" class="glyphicon glyphicon-remove deleteButton" aria-hidden="true" title="Delete"></span></td>
-                            <td><span ng-click="saveConfiguration(configuration.id)" class="glyphicon glyphicon-save saveButton" aria-hidden="true" title="Save"></span></td>
+
                             <!-- <td><span style="cursor:pointer;color:#3c763d;" ng-click="confirmExecute(configuration.id,configuration.statenam)"
                             class="glyphicon glyphicon-play" aria-hidden="true"></span></td> -->
+
                         </tr>
+
+
 
                     </tbody>
                 </table>
             </div>
+
         </div>
     </div>
 
 
-    <div ng-if='current.content'>
-        <h3>File content is:</h3>
+    <div ng-if='current.content && !fileAdded'>
+        <h3>File content:</h3>
         <pre>{{'{{current.content}}'}}</pre>
     </div>
     <div>
-        <button ng-if='current.content' id="btnLoad" ng-click="loadConfiguration()" type="button" class="btn btn-primary">Load configuration</button>
+        <button ng-if='current.content && !fileAdded' id="btnLoad" ng-click="showFilePopUp()" type="button" class="btn btn-primary">Commit this file</button>
     </div>
 
 
@@ -163,117 +188,117 @@
 
     <!-- program selection popup -->
     <!-- <div id="progPopUp" class="modal fade bs-example-modal-md in" tabindex="-1" role="dialog" aria-labelledby="programIDlabel">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h4 class="modal-title" id="programIDlabel">Please enter the ID of your observing program</h4>
-                </div>
+    <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+    <div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    <h4 class="modal-title" id="programIDlabel">Please enter the ID of your observing program</h4>
+</div>
 
-                <div class="modal-footer">
-                    <input type="text" class="form-control" ng-keypress="keyEnter($event)" ng-model="current.progname" id="txtProgramCode" />
-                </div>
-            </div>
+<div class="modal-footer">
+<input type="text" class="form-control" ng-keypress="keyEnter($event)" ng-model="current.progname" id="txtProgramCode" />
+</div>
+</div>
+</div>
+</div> -->
+
+
+<!-- popup for incorrect login cookie -->
+<div id="badLoginPopUp" class="modal fade bs-example-modal-md in" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel">
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+            <h4 class="modal-title" id="loginModalLabel">You are not logged in! Please <a href="https://www2.keck.hawaii.edu/inst/PILogin/login.php">log in or create an account here</a>.</h4>
         </div>
-    </div> -->
+    </div>
+</div>
+</div>
 
 
-    <!-- popup for incorrect login cookie -->
-    <div id="badLoginPopUp" class="modal fade bs-example-modal-md in" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h4 class="modal-title" id="loginModalLabel">You are not logged in! Please <a href="https://www2.keck.hawaii.edu/inst/PILogin/login.php">log in or create an account here</a>.</h4>
+<!-- Create a new configuration (POPUP) -->
+<div class="modal fade popup" id="addPopUp" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 ng-if="showAdd" class="modal-title" id="addModalLabel" >Add configuration info</h4>
+            <h4 ng-if="!showAdd" class="modal-title" id="addModalLabel" >Update configuration info</h4>
+        </div>
+        <div class="modal-body">
+            <form id="dataEntryForm">
+                <div ng-if="!showAdd">
+                    <div class="form-group" ng-repeat="(db_name, dat) in current.data.textEntryData">
+                        <label for="txt{{'{{db_name}}'}}" class="control-label">{{'{{dat.title}}'}}:</label>
+                        <input type="text" class="form-control" ng-model="current.info[db_name]" id="txt{{'{{db_name}}'}}" />
+                    </div>
+                    <div class="form-group" ng-repeat="(db_name, options) in current.data.selectableData">
+                        <label for="txt{{'{{db_name}}'}}" class="control-label">{{'{{options.title}}'}}:</label>
+                        <select type="text" class="form-control" ng-model="current.info[db_name]" ng-options="opt for opt in options.options" id="txt{{'{{db_name}}'}}" selected="{{'{{current.info[db_name]}}'}}"></select>
+                    </div>
+
                 </div>
+
+                <div ng-if="showAdd">
+                    <div class="form-group" ng-repeat="(db_name, dat) in current.data.textEntryData">
+                        <label for="txt{{'{{db_name}}'}}" class="control-label">{{'{{dat.title}}'}}:</label>
+                        <input type="text" class="form-control" ng-model="current.info[db_name]" id="txt{{'{{db_name}}'}}" />
+                    </div>
+                    <div class="form-group" ng-repeat="(db_name, options) in current.data.selectableData">
+                        <label for="txt{{'{{db_name}}'}}" class="control-label">{{'{{options.title}}'}}:</label>
+                        <select type="text" class="form-control" ng-model="current.info[db_name]" ng-options="opt for opt in options.options" id="txt{{'{{db_name}}'}}" ></select>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="modal-footer" id="defaultControls">
+            <span id="instrumentSpecificControls">
+                <span id="KCWIcontrols" ng-if="current.name=='KCWI'">
+                    <button id="btnDefaultDetector" ng-click="current.DefaultDetector()" type="button" class="btn btn-primary dynamic" >Default Det. Conf.</button>
+                    <button id="btnDefaultCalUnit" ng-click="current.DefaultCalUnit()" type="button" class="btn btn-primary dynamic" >Default Cal. Unit</button>
+                </span>
+            </span>
+            <button type="button"  class="btn btn-default" data-dismiss="modal">Close</button>
+            <button ng-if="showAdd" id="btnAdd" ng-click="addConfiguration()" type="button" class="btn btn-primary">Add configuration</button>
+            <button ng-if="!showAdd" id="btnAdd" ng-click="updateConfiguration()" type="button" class="btn btn-primary">Update</button>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<!-- popup to confirm DELETE -->
+
+<div id="deleteConfirm" class="modal fade bs-example-modal-md in" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+            <h4 class="modal-title" id="myLargeModalLabel">You are about to delete this entry. Do you want to proceed ?</h4> </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" ng-click="deleteConfiguration()" class="btn btn-primary">Delete</button>
             </div>
         </div>
     </div>
+</div>
 
+<!-- popup to confirm EXECUTE -->
 
-    <!-- Create a new configuration (POPUP) -->
-    <div class="modal fade popup" id="addPopUp" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 ng-if="showAdd" class="modal-title" id="addModalLabel" >Add configuration info</h4>
-                    <h4 ng-if="!showAdd" class="modal-title" id="addModalLabel" >Update configuration info</h4>
-                </div>
-                <div class="modal-body">
-                    <form id="dataEntryForm">
-                        <div ng-if="!showAdd">
-                            <div class="form-group" ng-repeat="(db_name, dat) in current.data.textEntryData">
-                                <label for="txt{{'{{db_name}}'}}" class="control-label">{{'{{dat.title}}'}}:</label>
-                                <input type="text" class="form-control" ng-model="current.info[db_name]" id="txt{{'{{db_name}}'}}" />
-                            </div>
-                            <div class="form-group" ng-repeat="(db_name, options) in current.data.selectableData">
-                                <label for="txt{{'{{db_name}}'}}" class="control-label">{{'{{options.title}}'}}:</label>
-                                <select type="text" class="form-control" ng-model="current.info[db_name]" ng-options="opt for opt in options.options" id="txt{{'{{db_name}}'}}" selected="{{'{{current.info[db_name]}}'}}"></select>
-                            </div>
-
-                        </div>
-
-                        <div ng-if="showAdd">
-                            <div class="form-group" ng-repeat="(db_name, dat) in current.data.textEntryData">
-                                <label for="txt{{'{{db_name}}'}}" class="control-label">{{'{{dat.title}}'}}:</label>
-                                <input type="text" class="form-control" ng-model="current.info[db_name]" id="txt{{'{{db_name}}'}}" />
-                            </div>
-                            <div class="form-group" ng-repeat="(db_name, options) in current.data.selectableData">
-                                <label for="txt{{'{{db_name}}'}}" class="control-label">{{'{{options.title}}'}}:</label>
-                                <select type="text" class="form-control" ng-model="current.info[db_name]" ng-options="opt for opt in options.options" id="txt{{'{{db_name}}'}}" ></select>
-                            </div>
-                        </div>
-
-                    </form>
-                </div>
-
-                <div class="modal-footer" id="defaultControls">
-                    <span id="instrumentSpecificControls">
-                        <span id="KCWIcontrols" ng-if="current.name=='KCWI'">
-                            <button id="btnDefaultDetector" ng-click="current.DefaultDetector()" type="button" class="btn btn-primary dynamic" >Default Det. Conf.</button>
-                            <button id="btnDefaultCalUnit" ng-click="current.DefaultCalUnit()" type="button" class="btn btn-primary dynamic" >Default Cal. Unit</button>
-                        </span>
-                    </span>
-                    <button type="button"  class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button ng-if="showAdd" id="btnAdd" ng-click="addConfiguration()" type="button" class="btn btn-primary">Add configuration</button>
-                    <button ng-if="!showAdd" id="btnAdd" ng-click="updateConfiguration()" type="button" class="btn btn-primary">Update</button>
-                </div>
+<div id="executeConfirm" class="modal fade bs-example-modal-md in" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myLargeModalLabel">You are about to execute this entry: {{'{{current.executeConfigurationName}}'}}</h4>
+                <h4 class="modal-title">Do you want to proceed?</h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" ng-click="executeConfiguration()" class="btn btn-primary">Execute</button>
             </div>
         </div>
     </div>
-
-
-    <!-- popup to confirm DELETE -->
-
-    <div id="deleteConfirm" class="modal fade bs-example-modal-md in" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h4 class="modal-title" id="myLargeModalLabel">You are about to delete this entry. Do you want to proceed ?</h4> </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" ng-click="deleteConfiguration()" class="btn btn-primary">Delete</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- popup to confirm EXECUTE -->
-
-    <div id="executeConfirm" class="modal fade bs-example-modal-md in" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h4 class="modal-title" id="myLargeModalLabel">You are about to execute this entry: {{'{{current.executeConfigurationName}}'}}</h4>
-                    <h4 class="modal-title">Do you want to proceed?</h4>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" ng-click="executeConfiguration()" class="btn btn-primary">Execute</button>
-                </div>
-            </div>
-        </div>
-    </div>
+</div>
 
 
 </body>

@@ -49,7 +49,12 @@ var keck1Config = angular.module('keck1Config', ['ngCookies'])
     // display content
     $scope.showContent = function($fileContent){
         $scope.current.content = $fileContent;
-        console.log("File content updated");
+        // console.log($scope.current.content);
+        // console.log("File content updated");
+        $scope.fileAdded = false;
+        $('#statefile').val(null); // clear file input so same file
+                                   // can be reuploaded if something goes wrong
+        $scope.showFilePopUp();
     }
 
     $scope.swapInstrument = function(name) {
@@ -123,6 +128,8 @@ var keck1Config = angular.module('keck1Config', ['ngCookies'])
 
         $scope.current.info.progname = $scope.current.progname;
 
+        if (!$scope.fileAdded) {$scope.fileAdded=true;}
+
         $http({
             method: 'POST',
             url:'/addConfiguration',
@@ -149,6 +156,31 @@ var keck1Config = angular.module('keck1Config', ['ngCookies'])
         }
 
         $('#addPopUp').modal('show')
+    }
+
+    $scope.showFilePopUp = function(){
+        $scope.showAdd = true;
+        $scope.current.info = {};
+
+        $scope.current.content.split('\n').forEach(function(entry) {
+            mat = entry.match(/([\w_]+)\s*\=\s*([\w_,.]+)/);
+            // console.log(mat);
+            $scope.current.info[mat[1]]=mat[2];
+        });
+
+        if ($scope.current.progname !== $scope.current.info.progname){
+            alert("Warning: state file uploaded for inactive program '" + $scope.current.info.progname + "'");
+            // if ($scope.current.info.progname.toString() in $scope.allowedPrograms) {
+            //     $scope.current.progname = $scope.current.info.progname;
+            // }
+            // else {
+            //     // alert('nope')
+            //     console.log($scope.current.info.progname, $scope.allowedPrograms)
+            // }
+        }
+        else {
+            $('#addPopUp').modal('show')
+        }
     }
 
     // edit an existing configuration
@@ -508,8 +540,9 @@ var keck1Config = angular.module('keck1Config', ['ngCookies'])
                 var reader = new FileReader();
                 reader.onload = function(onLoadEvent) {
                     scope.$apply(function() {
-                        fn(scope, {$fileContent:onLoadEvent.target.result});
-
+                        fn(scope, {
+                            $fileContent:onLoadEvent.target.result
+                        });
                     });
                 };
                 reader.readAsText((onChangeEvent.srcElement || onChangeEvent.target).files[0]);
