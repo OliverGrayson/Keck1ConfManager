@@ -5,7 +5,8 @@ var keck1Config = angular.module('keck1Config', ['ngCookies'])
     $scope.instruments = INSTRUMENT_CONFIGURATIONS;
     $scope.current = {"name":"Instrument","progname":"Program"};
 
-    $scope.mode = 'debug';
+    // $scope.mode = 'debug';
+    $scope.mode = "";
 
     if ($scope.mode === 'debug') {
         console.log('debug mode')
@@ -450,14 +451,14 @@ var keck1Config = angular.module('keck1Config', ['ngCookies'])
                 }
             })
             .then(function(response) {
-
-                if (response.data == {}) {
+                if ($.isEmptyObject(response.data)) {
                     alert("no allowed programs for this user")
                     return;
                 }
                 for (var entry in response.data) {
                     $scope.allowedPrograms.push(entry["ProjCode"]);
                 }
+                console.log(response.data)
             }, function(error) {
                 console.log(error);
             });
@@ -470,7 +471,6 @@ var keck1Config = angular.module('keck1Config', ['ngCookies'])
     $scope.checkLogin = function() {
         // console.log(id_cookie)
         var id_cookie = $cookies.get('keckID');
-        console.log(id_cookie)
 
         if (id_cookie == undefined) {
             $("#badLoginPopUp").modal('show');

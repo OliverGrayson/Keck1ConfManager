@@ -3,7 +3,7 @@
 import sys
 import subprocess
 import os
-import requests
+import urllib.request
 
 from pymongo import MongoClient
 from bson.objectid import ObjectId
@@ -195,27 +195,59 @@ def sendFile():
 
 @application.route("/getAllowedPrograms",methods=['POST'])
 def getAllowedPrograms():
-    keck_id = request.json['keck_id']
-    getURL = 'http://www.keck.hawaii.edu/software/db_api/telSchedule.php'
+    keck_id = str(request.json['keck_id'])
 
-    observer = requests.get(url = getURL, params = {
-            'cmd':'getScheduleByUser',
-            'obsid':keck_id,
-            'type':'observer'
-        })
 
-    pi = requests.get(url = getURL, params = {
-             'cmd':'getScheduleByUser',
-             'obsid':keck_id,
-             'type':'pi'
-         })
+    try:
+        url = "http://www.keck.hawaii.edu/software/db_api/telSchedule.php?"
+        sendUrl = url+"cmd=getScheduleByUser&obsid="+(keck_id)+"&type=observer"
+        observerData = urllib.request.urlopen(sendUrl)
 
-    print(observer.content, pi.content)
+        observerData = observerData.read().decode("utf8")
+        observerData = json.loads(observerData)
+        print([entry["ProjCode"] for entry in observerData])
 
-    if (observer.content is b'' and pi.content is b''):
-        return json.dumps({})
+    except:
+        print('No scheduled observer times')
+        observerData = False
+
+    try:
+        url = "http://www.keck.hawaii.edu/software/db_api/telSchedule.php?"
+        sendUrl = url+"cmd=getScheduleByUser&obsid="+(keck_id)+"&type=pi"
+        piData = urllib.request.urlopen(sendUrl)
+
+        piData = observerData.read().decode("utf8")
+        piData = json.loads(piData)
+        print([entry["ProjCode"] for entry in piData])
+
+    except:
+        print('No scheduled pi times')
+        piData = False
+
+    if observerData:
+        if piData:
+            return json.dumps({pi:piData, obs:observerData})
+        return json.dumps({pi:{}, obs:observerData})
+
+    elif piData:
+        return json.dumps({pi:piData, obs:{}})
+
     else:
-        return {key: value for (key, value) in (observer.json().items() + pi.json().items())}
+        return json.dumps({})
+
+    # observer = requests.get(url = getURL, params = {
+    #         'cmd':'getScheduleByUser',
+    #         'obsid':keck_id,
+    #         'type':'observer'
+    #     })
+    #
+    # pi = requests.get(url = getURL, params = {
+    #          'cmd':'getScheduleByUser',
+    #          'obsid':keck_id,
+    #          'type':'pi'
+    #      })
+
+    # print(observer.content, pi.content)
 
 
 
