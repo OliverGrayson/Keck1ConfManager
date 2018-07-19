@@ -121,6 +121,7 @@ class instrumentDB(object):
                 except:
                     pass
 
+        print(new_config,configurationId)
         self.db.Configurations.update_one({'_id':ObjectId(configurationId)},{'$set':new_config})
 
     # TODO maybe don't actually delete but only hide so as to be recoverable?

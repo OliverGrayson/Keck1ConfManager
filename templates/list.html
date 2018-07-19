@@ -86,7 +86,7 @@
                         <i class="toggle icon icon-arrow-down"></i>
                         <span class="placeholder">{{'{{current.name}}'}}</span>
                         <div class="hidden-options" ng-show="show_opt">
-                            <label class="option" ng-repeat="(key, dat) in instruments">
+                            <label class="option" ng-repeat="key in allowedInstruments">
                                 <input type="radio" name="option" id="instrument-{{'{{key}}'}}" ng-model="name" ng-value="key" ng-click="swapInstrument(name)" >
                                 <span class="title animated fadeIn">{{'{{key}}'}}</span>
                             </label>
@@ -129,7 +129,7 @@
                     <tr id="configurationTable">
                         <!-- <th colspan="4"></th> -->
                         <th>#</th>
-                        <th ng-repeat="heading in table_headings">{{'{{heading}}'}}</td>
+                        <th ng-repeat="heading in table_headings"><div class="prevent-wrap">{{'{{heading}}'}}</div></td>
                         </tr>
                     </thead>
                     <tbody>

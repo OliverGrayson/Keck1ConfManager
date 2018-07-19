@@ -125,7 +125,7 @@ var INSTRUMENT_CONFIGURATIONS = {
                     'title':'Echelle Angle'
                 },
                 'xdangle': {
-                    'title':'Cross-Disperser Angle'
+                    'title':'Cross Disperser Angle'
                 }
             }
         }
@@ -154,25 +154,25 @@ var INSTRUMENT_CONFIGURATIONS = {
                 'filter': {
                     'title': 'Filter',
                     'options': [
-                        "u'-Blue",
-                        "B-Blue",
-                        "g-Blue",
-                        "V-Blue",
-                        "B5-Red",
-                        "V-Red",
-                        "R-Red",
-                        "Rs-Red",
-                        "I-Red",
-                        "GG495-Red",
-                        "OG570-Red",
-                        "RG850-Red",
-                        "NB4000-Red",
-                        "NB6741-Red",
-                        "NB8185-Red",
-                        "NB8560-Red",
-                        "NB9135-Red",
-                        "NB9148-Red",
-                        "NB4325-Red"
+                        "u'_Blue",
+                        "B_Blue",
+                        "g_Blue",
+                        "V_Blue",
+                        "B5_Red",
+                        "V_Red",
+                        "R_Red",
+                        "Rs_Red",
+                        "I_Red",
+                        "GG495_Red",
+                        "OG570_Red",
+                        "RG850_Red",
+                        "NB4000_Red",
+                        "NB6741_Red",
+                        "NB8185_Red",
+                        "NB8560_Red",
+                        "NB9135_Red",
+                        "NB9148_Red",
+                        "NB4325_Red"
                     ]
                 },
                 'bluegrism': {
@@ -183,8 +183,8 @@ var INSTRUMENT_CONFIGURATIONS = {
                     'title': 'Red Grism',
                     'options':
                     ['150/7500', '300/5000', '400/8500', '600/5000', '600/7500',
-                    '600/10000 Gold coated', '831/8200 Gold coated', '900/5500',
-                    '1200/7500', '1200/9000 Gold coated', 'Mirror']
+                    '600/10000_gold_coated', '831/8200_gold_coated', '900/5500',
+                    '1200/7500', '1200/9000_gold_coated', 'Mirror']
                 },
                 'slitmask': {
                     'title': 'Slit Mask',
@@ -223,7 +223,7 @@ var INSTRUMENT_CONFIGURATIONS = {
             },
             'textEntryData': {
                 'statenam':{
-                    'title':'Configuration Name',
+                    'title':'Configuration\nName',
                     'default': ''
                 },
             }

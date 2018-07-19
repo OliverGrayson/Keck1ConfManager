@@ -1,3 +1,5 @@
+var debug = true;
+
 var keck1Config = angular.module('keck1Config', ['ngCookies'])
 .controller('HomeCtrl', ['$scope', '$http', '$cookies', function($scope, $http, $cookies) {
 
@@ -5,10 +7,7 @@ var keck1Config = angular.module('keck1Config', ['ngCookies'])
     $scope.instruments = INSTRUMENT_CONFIGURATIONS;
     $scope.current = {"name":"Instrument","progname":"Program"};
 
-    // $scope.mode = 'debug';
-    $scope.mode = "";
-
-    if ($scope.mode === 'debug') {
+    if (debug) {
         console.log('debug mode')
     }
 
@@ -60,9 +59,14 @@ var keck1Config = angular.module('keck1Config', ['ngCookies'])
 
     $scope.swapInstrument = function(name) {
 
+        $scope.instruments = $scope.instruments || INSTRUMENT_CONFIGURATIONS;
+        $scope.current = $scope.current || {"name":"Instrument","progname":"Program"};
+
         // console.log('swap')
         var prog = $scope.current.progname;
         $scope.current = $scope.instruments[name];
+
+        console.log($scope.instruments, name)
 
         // this bit makes it so you can select either the program
         // or the instrument first and it doesn't make a difference
@@ -338,11 +342,13 @@ var keck1Config = angular.module('keck1Config', ['ngCookies'])
     }
 
     // post the updated configuration
-    $scope.updateConfiguration = function(ins_id){
-        $scope.current.id = ins_id;
+    $scope.updateConfiguration = function(){
+        // $scope.current.id = ins_id;
+        // $scope.current.info.progname = $scope.current.progname;
         $('.popup').modal('hide');
 
-        console.log("updateConfiguration:", ins_id, $scope.current)
+        // console.log("updateConfiguration:", ins_id, $scope.current)
+        console.log("updateConfiguration:", $scope.current.info.id, $scope.current)
 
         $http({
             method: 'POST',
@@ -350,7 +356,7 @@ var keck1Config = angular.module('keck1Config', ['ngCookies'])
             data: {
                 instrument:$scope.current.name,
                 info:$scope.current.info,
-                id:$scope.current.id
+                id:$scope.current.info.id
             }
         }).then(function(response) {
             $scope.message="";
@@ -360,7 +366,6 @@ var keck1Config = angular.module('keck1Config', ['ngCookies'])
             console.log(error);
             alert("error adding configuration");
         });
-
 
     }
 
@@ -441,8 +446,9 @@ var keck1Config = angular.module('keck1Config', ['ngCookies'])
 
     $scope.generateAllowedProgramList = function(keckID) {
         $scope.allowedPrograms = [];
+        $scope.allowedInstruments = [];
 
-        if ($scope.mode != 'debug'){
+        if (!debug){
             $http({
                 method: 'POST',
                 url: '/getAllowedPrograms',
@@ -457,15 +463,18 @@ var keck1Config = angular.module('keck1Config', ['ngCookies'])
                 }
                 else {
                     response.data.forEach(function(program) {
-                        $scope.allowedPrograms.push(program);
+                        $scope.allowedPrograms.push(program[0]);
+                        $scope.allowedInstruments.push(program[1]);
                     })
+                    console.log(response.data)
                 }
             }, function(error) {
                 console.log(error);
             });
         }
         else {
-            $scope.allowedPrograms = ['U263', 'U202', 'E001', 'U199'];
+            $scope.allowedPrograms = ['U263', 'U202', 'E001', 'U199', '_test'];
+            $scope.allowedInstruments = ['KCWI', 'HIRES', 'LRIS', 'MOSFIRE'];
         }
     }
 
@@ -473,7 +482,7 @@ var keck1Config = angular.module('keck1Config', ['ngCookies'])
         // console.log(id_cookie)
         var id_cookie = $cookies.get('keckID');
 
-        if (id_cookie == undefined) {
+        if (id_cookie == undefined && !debug) {
             $("#badLoginPopUp").modal('show');
         }
         else {

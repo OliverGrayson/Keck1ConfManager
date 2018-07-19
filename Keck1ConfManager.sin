@@ -204,7 +204,7 @@ def getAllowedPrograms():
         observerData = urllib.request.urlopen(urllib.request.Request(sendUrl, headers=headers))
         observerData = observerData.read().decode("utf8")
         observerData = json.loads(observerData)
-        obsDatList = [entry["ProjCode"] for entry in observerData]
+        obsDatList = [(entry["ProjCode"],entry["Instrument"]) for entry in observerData]
 
     except:
         print('No scheduled observer times')
@@ -215,7 +215,7 @@ def getAllowedPrograms():
         piData = urllib.request.urlopen(urllib.request.Request(sendUrl, headers=headers))
         piData = piData.read().decode("utf8")
         piData = json.loads(piData)
-        piDatList = [entry["ProjCode"] for entry in piData]
+        piDatList = [(entry["ProjCode"],entry["Instrument"]) for entry in piData]
 
     except:
         print('No scheduled PI times')
