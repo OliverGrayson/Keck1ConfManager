@@ -196,58 +196,34 @@ def sendFile():
 @application.route("/getAllowedPrograms",methods=['POST'])
 def getAllowedPrograms():
     keck_id = str(request.json['keck_id'])
-
+    url = "http://www.keck.hawaii.edu/software/db_api/telSchedule.php?cmd=getScheduleByUser&obsid="+keck_id
+    headers = {'X-Requested-With': 'XMLHttpRequest'}
 
     try:
-        url = "http://www.keck.hawaii.edu/software/db_api/telSchedule.php?"
-        sendUrl = url+"cmd=getScheduleByUser&obsid="+(keck_id)+"&type=observer"
-        observerData = urllib.request.urlopen(sendUrl)
-
+        sendUrl = url+"&type=observer"
+        observerData = urllib.request.urlopen(urllib.request.Request(sendUrl, headers=headers))
         observerData = observerData.read().decode("utf8")
         observerData = json.loads(observerData)
-        print([entry["ProjCode"] for entry in observerData])
+        obsDatList = [entry["ProjCode"] for entry in observerData]
 
     except:
         print('No scheduled observer times')
-        observerData = False
+        obsDatList = []
 
     try:
-        url = "http://www.keck.hawaii.edu/software/db_api/telSchedule.php?"
-        sendUrl = url+"cmd=getScheduleByUser&obsid="+(keck_id)+"&type=pi"
-        piData = urllib.request.urlopen(sendUrl)
-
-        piData = observerData.read().decode("utf8")
+        sendUrl = url+"&type=pi"
+        piData = urllib.request.urlopen(urllib.request.Request(sendUrl, headers=headers))
+        piData = piData.read().decode("utf8")
         piData = json.loads(piData)
-        print([entry["ProjCode"] for entry in piData])
+        piDatList = [entry["ProjCode"] for entry in piData]
 
     except:
-        print('No scheduled pi times')
-        piData = False
+        print('No scheduled PI times')
+        piDatList = []
 
-    if observerData:
-        if piData:
-            return json.dumps({pi:piData, obs:observerData})
-        return json.dumps({pi:{}, obs:observerData})
+    return json.dumps(list(set(obsDatList + piDatList)))
 
-    elif piData:
-        return json.dumps({pi:piData, obs:{}})
-
-    else:
-        return json.dumps({})
-
-    # observer = requests.get(url = getURL, params = {
-    #         'cmd':'getScheduleByUser',
-    #         'obsid':keck_id,
-    #         'type':'observer'
-    #     })
-    #
-    # pi = requests.get(url = getURL, params = {
-    #          'cmd':'getScheduleByUser',
-    #          'obsid':keck_id,
-    #          'type':'pi'
-    #      })
-
-    # print(observer.content, pi.content)
+    # return json.dumps(list(set(['C305', 'C305', 'C305', 'C292', 'C292', 'C305', 'C305', 'C292', 'C292'])))
 
 
 

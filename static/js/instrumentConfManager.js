@@ -455,10 +455,11 @@ var keck1Config = angular.module('keck1Config', ['ngCookies'])
                     alert("no allowed programs for this user")
                     return;
                 }
-                for (var entry in response.data) {
-                    $scope.allowedPrograms.push(entry["ProjCode"]);
+                else {
+                    response.data.forEach(function(program) {
+                        $scope.allowedPrograms.push(program);
+                    })
                 }
-                console.log(response.data)
             }, function(error) {
                 console.log(error);
             });
