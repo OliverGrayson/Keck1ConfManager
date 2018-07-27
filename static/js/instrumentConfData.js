@@ -89,45 +89,60 @@ var INSTRUMENT_CONFIGURATIONS = {
         'progname': "",
         'data': {
             'selectableData': {
-                'rotatormode':{
-                    'title': 'Rotator Mode',
-                    'options': ['Vertical', 'Position Angle', 'Physical', 'None']
+                'fil1name': {
+                    'title': 'Filter 1',
+                    'options': ['clear', 'rg610', 'og530', 'gg475', 'kv418',
+                                'kv408', 'kv380', 'kv370', 'wg335']
                 },
-                'filter': {
-                    'title': 'Filter',
-                    'options': ['RG610', 'OG530', 'GG475', 'KV418', 'KV408',
-                                'KV380', 'KV370', 'WG335']
+                'fil2name': {
+                    'title': 'Filter 2',
+                    'options': ['clear', 'OCLI d.t.', 'CuSO4', '5893/30',
+                                '6199/30', '6300/30', '6563/30']
                 },
-                'slit': {
+                'deckname': {
                     'title': 'Slit',
                     'options': ['B1', 'B2', 'B3', 'B4', 'B5', 'C1', 'C2', 'C3',
                                 'C4', 'C5', 'D1', 'D2', 'D3', 'D4', 'D5', 'E1',
                                 'E2', 'E3', 'E4', 'E5']
                 },
-                'xdisp': {
+                'coll': {
                     'title': 'Cross Disperser',
-                    'options': ['Red', 'Blue']
+                    'options': ['red', 'blue']
                 },
-                'iodinecell': {
-                    'title': 'Iodine Cell',
-                    'options': ['On', 'Off']
-                }
+                'lampname': {
+                    'title': 'Lamp',
+                    'options': ['none', 'quartz1', 'quartz2',
+                                'ThAr1', 'ThAr2']
+                },
+                'lfilname': {
+                    'title': 'Lamp Filter',
+                    'options': ['bg12', 'bg13', 'bg14', 'bg38', 'dt',
+                                'gg495', 'ng3', 'ug1', 'ug5']
+                },
+                'cofname': {
+                    'title':'Collimator Focus',
+                    'options': ['home', 'blue', 'red', 'forward', 'reverse',
+                                'DR00MM', 'DR03MM', 'DR05MM', 'DR06MM',
+                                'DR08MM', 'DB00mm', 'DB03mm', 'DB05mm',
+                                'DB06mm', 'DB08mm', 'SR00mm', 'SR03mm',
+                                'SR05mm', 'SR06mm', 'SR08mm', 'SB00mm',
+                                'SB03mm', 'SB05mm', 'SB06mm', 'SB08mm']
+                },
             },
             'textEntryData': {
                 'statenam':{
                     'title':'Configuration Name',
                     'default': ''
                 },
-                'rotator_val':{
-                    'title':'Rotator Value'
-                },
-                'ecangle': {
+                'echangl': {
                     'title':'Echelle Angle'
                 },
-                'xdangle': {
+                'xdangl': {
                     'title':'Cross Disperser Angle'
+                },
+                'slitwid': {
+                    'title':'Slit Width'
                 }
-            }
         }
 
     },
