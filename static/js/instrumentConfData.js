@@ -89,6 +89,10 @@ var INSTRUMENT_CONFIGURATIONS = {
         'progname': "",
         'data': {
             'selectableData': {
+                'hatch': {
+                    'title': 'Hatch',
+                    'options': ['open', 'closed']
+                },
                 'fil1name': {
                     'title': 'Filter 1',
                     'options': ['clear', 'rg610', 'og530', 'gg475', 'kv418',
